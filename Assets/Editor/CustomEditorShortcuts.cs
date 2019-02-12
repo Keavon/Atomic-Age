@@ -3,7 +3,7 @@ using UnityEditor;
 
 public static class CustomEditorShortcuts
 {
-    [MenuItem("Shortcuts/Redo %#Z")]
+    [MenuItem("Edit/Redo %#Z")]
     static void Redo()
     {
         Undo.PerformRedo();
