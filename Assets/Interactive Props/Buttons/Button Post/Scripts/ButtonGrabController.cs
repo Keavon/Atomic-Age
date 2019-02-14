@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class ButtonGrabController : MonoBehaviour, IGrabbable {
 	public GameObject actionObject;
-	IActionable action;
+	public string actionableScript;
+
+	IActionable actionable;
 
 	public void Start() {
-		action = actionObject.GetComponent<IActionable>();
+		actionable = actionObject.GetComponent(actionableScript) as IActionable;
 	}
 
 	public void Force(Vector2 force) {
-		action.Play();
+		actionable.Run();
 	}
 
 	public void OnTriggerEnter2D(Collider2D other) {

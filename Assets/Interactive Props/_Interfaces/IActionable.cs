@@ -3,5 +3,5 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface IActionable {
-	void Play();
+	void Run(params int[] inputs);
 }
