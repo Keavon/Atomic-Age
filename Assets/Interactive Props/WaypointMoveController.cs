@@ -18,10 +18,10 @@ public class WaypointMoveController : MonoBehaviour, IActionable {
 	}
 
 	public void Start() {
-		if (autoplay) Play();
+		if (autoplay) Run();
 	}
 
-	public void Play() {
+	public void Run(params int[] inputs) {
 		Assert.AreEqual(waypoints.Length - 1, intervals.Length);
 
 		rb = GetComponent<Rigidbody2D>();
@@ -40,11 +40,11 @@ public class WaypointMoveController : MonoBehaviour, IActionable {
 
 		if (timeIntoWaypoint < duration && currentWaypoint < waypoints.Length - 1) {
 			Vector2 moveVector = waypoints[currentWaypoint + 1] - waypoints[currentWaypoint];
-			rb.velocity = moveVector / duration;
+			rb.velocity = new Vector2(moveVector.x / duration, rb.velocity.y); // TODO: TEMP
 			timeIntoWaypoint += Time.deltaTime;
 		}
 		else {
-			rb.velocity = Vector2.zero;
+			rb.velocity = new Vector2(0, rb.velocity.y); // TODO: TEMP
 			playing = false;
 			currentWaypoint = 0;
 			timeIntoWaypoint = 0;
