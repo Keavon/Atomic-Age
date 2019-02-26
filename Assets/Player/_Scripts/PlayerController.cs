@@ -136,8 +136,11 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void PerformMopping() {
+        Vector3 moppingLocation = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        moppingLocation.z = 1;
 
-	}
+        LiquidControl.instance.Mop(moppingLocation);
+    }
 
 	void PerformClimbing() {
 		// Ensure there is a climb target
