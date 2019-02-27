@@ -35,13 +35,13 @@ public class LiquidBehavior : MonoBehaviour {
     {
         liquidMeshCollider = GetComponent<MeshCollider>();
         mesh = new Mesh();
-        moppable = LayerMask.GetMask("Moppable");
+        moppable = LayerMask.GetMask("Default");
         LoadGlobals();
         GetComponent<MeshFilter>().mesh = mesh;
         center = position;
 
         rightBounds = leftBounds = position.x;
-        height = position.y;
+        height = position.y + 0.4f;
     }
 
     public void UpdateMesh(Vector3 position)
@@ -104,7 +104,7 @@ public class LiquidBehavior : MonoBehaviour {
         if (width > maxWidth)
             return;
 
-        partitions = (int) (width * 100);
+        partitions = (int) (width * 50);
 
         if (partitions == 0)
             return;
@@ -126,6 +126,7 @@ public class LiquidBehavior : MonoBehaviour {
                 // Raycast is inside of collider, try again at the max height of the collider
                 if (hit.distance == 0)
                 {
+                    Debug.Log(hit.collider.tag);
                     float colliderMaxY = hit.collider.bounds.max.y;
                     Vector3 newRaycastPosition = new Vector3(raycastPosition.x, colliderMaxY, raycastPosition.z);
                     RaycastHit2D hit2 = Physics2D.Raycast(newRaycastPosition, Vector2.down, maxDistanceToGround, moppable);

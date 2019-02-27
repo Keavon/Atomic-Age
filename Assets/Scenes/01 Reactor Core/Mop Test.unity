@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 7424340}
   - component: {fileID: 7424337}
   - component: {fileID: 7424339}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -882,6 +882,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actionObject: {fileID: 878124951}
+  actionableScript: 
 --- !u!1 &356813318
 GameObject:
   m_ObjectHideFlags: 0
@@ -1723,7 +1724,7 @@ GameObject:
   m_Component:
   - component: {fileID: 525561989}
   - component: {fileID: 525561990}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Directional light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3777,13 +3778,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1508882142}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.03925978, y: 0, z: 0, w: 0.9992291}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1489584402}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -4.5, y: 0, z: 0}
 --- !u!61 &1508882144
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3925,9 +3926,9 @@ MonoBehaviour:
   liquidPrefab: {fileID: 1031611667731240, guid: 26d728cbe88b7684084dfeea35b80f6d,
     type: 2}
   partitions: 50
-  maxDistanceToGround: 0.4
-  liquidHeightOffGround: 0.03
-  liquidDepthBelowGround: 0.06
+  maxDistanceToGround: 10
+  liquidHeightOffGround: 0.06
+  liquidDepthBelowGround: 0
   maxLedgePaint: 0.4
   minLedgeHeight: 0.1
   maxWidth: 2
@@ -4101,7 +4102,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1718484151}
   - component: {fileID: 1718484150}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Mop
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -4837,8 +4838,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb7e34cb3f0019a46bb1c1b7a6545cbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crane: {fileID: 878124951}
-  lever: {fileID: 1896587970}
 --- !u!61 &1968858505
 BoxCollider2D:
   m_ObjectHideFlags: 0

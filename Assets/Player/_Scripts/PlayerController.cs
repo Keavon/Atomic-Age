@@ -59,7 +59,9 @@ public class PlayerController : MonoBehaviour {
 		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Mopping")) PerformMopping();
 		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Climbing")) PerformClimbing();
 		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Grabbing")) PerformGrabbing();
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Dragging")) PerformDragging();
+        if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Dragging")) PerformDragging();
+
+        if(stateMachine.GetBool("Input_MopPress")) StartMopping();
 	}
 
 	void PushPlayerAtSpeedHorizontally(float speed, float acceleration) {
@@ -97,6 +99,10 @@ public class PlayerController : MonoBehaviour {
 		PushPlayerToPlaceHorizontally(xCoordinate, speed, acceleration);
 		PushPlayerToPlaceVertically(yCoordinate, speed, acceleration);
 	}
+
+    void StartMopping(){
+        LiquidControl.instance.Create(transform.position);
+    }
 
 	void PerformWalking() {
 		Vector2 motion = InputManager.motion();
@@ -136,10 +142,21 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void PerformMopping() {
-        Vector3 moppingLocation = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        moppingLocation.z = 1;
+        Vector3 moppingLocation = transform.position;
 
-        LiquidControl.instance.Mop(moppingLocation);
+        // Read player motion input
+        Vector2 motion = InputManager.motion();
+
+        // Read player velocity
+        Vector2 velocity = playerRigidbody.velocity;
+        velocity.x = motion.x * walkSpeed;
+
+        // Write player velocity
+        playerRigidbody.velocity = velocity;
+
+        if (touchingGrounds.Any((ground) => ground.layer == 0)){
+            LiquidControl.instance.Redraw(moppingLocation);
+        }
     }
 
 	void PerformClimbing() {
