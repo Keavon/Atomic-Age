@@ -160,7 +160,14 @@ public class PlayerController : MonoBehaviour {
         playerRigidbody.velocity = velocity;
 
         if (touchingGrounds.Any((ground) => ground.layer == 0)){
-            ExtendLiquid(moppingLocation);
+            if (currentMoppingTarget != null)
+            {
+                ExtendLiquid(moppingLocation);
+            }
+            else
+            {
+                CreateLiquid(moppingLocation);
+            }
         }
     }
 

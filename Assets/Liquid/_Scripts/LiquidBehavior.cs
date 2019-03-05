@@ -60,7 +60,7 @@ public class LiquidBehavior : MonoBehaviour {
         FillVerticesArray();
 
         // No vertices could be placed, we're done
-        if (verts.Length == 0)
+        if (verts == null || verts.Length == 0)
         {
             Destroy(gameObject);
             return;
@@ -125,7 +125,6 @@ public class LiquidBehavior : MonoBehaviour {
                 // Raycast is inside of collider, try again at the max height of the collider
                 if (hit.distance == 0)
                 {
-                    Debug.Log(hit.collider.tag);
                     float colliderMaxY = hit.collider.bounds.max.y;
                     Vector3 newRaycastPosition = new Vector3(raycastPosition.x, colliderMaxY, raycastPosition.z);
                     RaycastHit2D hit2 = Physics2D.Raycast(newRaycastPosition, Vector2.down, maxDistanceToGround, moppable);
