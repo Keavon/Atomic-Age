@@ -8,12 +8,14 @@ public class LiquidBehavior : MonoBehaviour {
     public SpriteRenderer liquidDrips;
     public Sprite[] liquidDripSprites;
 
-    private int partitions;
-    private float liquidHeightOffGround;
-    private float liquidDepthBelowGround;
-    private float maxLedgePaint;
-    private float minLedgeHeight;
-    private float maxDistanceToGround;
+    public int partitions = 50;
+    public float maxDistanceToGround = 0.5f;
+    public float liquidHeightOffGround = 0.06f;
+    public float liquidDepthBelowGround = 0f;
+    public float maxLedgePaint = 0.4f;
+    public float minLedgeHeight = 0.1f;
+    public float maxWidth = 2f;
+
     private LayerMask moppable;
 
     private Vector3[] verts;
@@ -28,15 +30,12 @@ public class LiquidBehavior : MonoBehaviour {
     private float leftBounds;
     private float height;
 
-    private float maxWidth;
-
 
     public void Create(Vector3 position)
     {
         liquidMeshCollider = GetComponent<MeshCollider>();
         mesh = new Mesh();
         moppable = LayerMask.GetMask("Default");
-        LoadGlobals();
         GetComponent<MeshFilter>().mesh = mesh;
         center = position;
 
@@ -209,7 +208,7 @@ public class LiquidBehavior : MonoBehaviour {
 
     private void GenerateTriangles()
     {
-		triangles = new int[verts.Length * 2 * 3 + 12];
+        triangles = new int[verts.Length * 2 * 3 + 12];
 
         // Connect vertexes using triangles, e.g.:
         // .___.
@@ -218,84 +217,72 @@ public class LiquidBehavior : MonoBehaviour {
         // |/  |
         // ˙‾‾‾˙
 
-		int tNum = 24;
+        int tNum = 24;
 
         for (int i = 0; i < partitions - 1; i++)
         {
             // Don't connect vertices if they're far apart
             if (Mathf.Abs(verts[i].x - verts[i + 1].x) > 0.1f)
                 continue;
-        
+
             // Front left triangle
             triangles[i * tNum + 0] = i;
-			triangles[i * tNum + 1] = i + partitions;
-			triangles[i * tNum + 2] = i + 1;
+            triangles[i * tNum + 1] = i + partitions;
+            triangles[i * tNum + 2] = i + 1;
 
             // Front right triangle
-			triangles[i * tNum + 3] = i + 1;
-			triangles[i * tNum + 4] = i + partitions;
-			triangles[i * tNum + 5] = i + partitions + 1;
+            triangles[i * tNum + 3] = i + 1;
+            triangles[i * tNum + 4] = i + partitions;
+            triangles[i * tNum + 5] = i + partitions + 1;
 
-			// Back left triangle
-			triangles[i * tNum + 6] = partitions * 2 + i;
-			triangles[i * tNum + 7] = partitions * 2 + i + partitions;
-			triangles[i * tNum + 8] = partitions * 2 + i + 1;
+            // Back left triangle
+            triangles[i * tNum + 6] = partitions * 2 + i;
+            triangles[i * tNum + 7] = partitions * 2 + i + partitions;
+            triangles[i * tNum + 8] = partitions * 2 + i + 1;
 
-			// Back right triangle
-			triangles[i * tNum + 9] = partitions * 2 + i + 1;
-			triangles[i * tNum + 10] = partitions * 2 + i + partitions;
-			triangles[i * tNum + 11] = partitions * 2 + i + partitions + 1;
+            // Back right triangle
+            triangles[i * tNum + 9] = partitions * 2 + i + 1;
+            triangles[i * tNum + 10] = partitions * 2 + i + partitions;
+            triangles[i * tNum + 11] = partitions * 2 + i + partitions + 1;
 
-			// Top left triangle
-			triangles[i * tNum + 12] = i + 1;
-			triangles[i * tNum + 13] = partitions * 2 + i + 1;
-			triangles[i * tNum + 14] = partitions * 2 + i;
+            // Top left triangle
+            triangles[i * tNum + 12] = i + 1;
+            triangles[i * tNum + 13] = partitions * 2 + i + 1;
+            triangles[i * tNum + 14] = partitions * 2 + i;
 
-			// Top right triangle
-			triangles[i * tNum + 15] = i;
-			triangles[i * tNum + 16] = i + 1;
-			triangles[i * tNum + 17] = partitions * 2 + i;
+            // Top right triangle
+            triangles[i * tNum + 15] = i;
+            triangles[i * tNum + 16] = i + 1;
+            triangles[i * tNum + 17] = partitions * 2 + i;
 
-			// Bottom left triangle
-			triangles[i * tNum + 18] = i + partitions;
-			triangles[i * tNum + 19] = partitions * 2 + i + partitions;
-			triangles[i * tNum + 20] = partitions * 2 + i + partitions + 1;
+            // Bottom left triangle
+            triangles[i * tNum + 18] = i + partitions;
+            triangles[i * tNum + 19] = partitions * 2 + i + partitions;
+            triangles[i * tNum + 20] = partitions * 2 + i + partitions + 1;
 
-			// Bottom right triangle
-			triangles[i * tNum + 21] = i + partitions;
-			triangles[i * tNum + 22] = i + partitions + 1;
-			triangles[i * tNum + 23] = partitions * 2 + i + partitions + 1;
+            // Bottom right triangle
+            triangles[i * tNum + 21] = i + partitions;
+            triangles[i * tNum + 22] = i + partitions + 1;
+            triangles[i * tNum + 23] = partitions * 2 + i + partitions + 1;
         }
 
-		// Draw left side triangles
-		triangles[triangles.Length - 12] = 0;
-		triangles[triangles.Length - 11] = partitions;
-		triangles[triangles.Length - 10] = partitions * 2;
+        // Draw left side triangles
+        triangles[triangles.Length - 12] = 0;
+        triangles[triangles.Length - 11] = partitions;
+        triangles[triangles.Length - 10] = partitions * 2;
 
-		triangles[triangles.Length - 9] = partitions;
-		triangles[triangles.Length - 8] = partitions * 2;
-		triangles[triangles.Length - 7] = partitions * 2 + partitions;
+        triangles[triangles.Length - 9] = partitions;
+        triangles[triangles.Length - 8] = partitions * 2;
+        triangles[triangles.Length - 7] = partitions * 2 + partitions;
 
-		// Draw right side triangles
-		triangles[triangles.Length - 6] = partitions + 0 - 1;
-		triangles[triangles.Length - 5] = partitions + partitions - 1;
-		triangles[triangles.Length - 4] = partitions + partitions * 2 - 1;
+        // Draw right side triangles
+        triangles[triangles.Length - 6] = partitions + 0 - 1;
+        triangles[triangles.Length - 5] = partitions + partitions - 1;
+        triangles[triangles.Length - 4] = partitions + partitions * 2 - 1;
 
-		triangles[triangles.Length - 3] = partitions + partitions - 1;
-		triangles[triangles.Length - 2] = partitions + partitions * 2 - 1;
-		triangles[triangles.Length - 1] = partitions + partitions * 2 + partitions - 1;
+        triangles[triangles.Length - 3] = partitions + partitions - 1;
+        triangles[triangles.Length - 2] = partitions + partitions * 2 - 1;
+        triangles[triangles.Length - 1] = partitions + partitions * 2 + partitions - 1;
 
-    }
-
-    private void LoadGlobals()
-    {
-        // We store globals in LiquidControl so that we can modify them from that object
-        partitions = LiquidControl.instance.partitions;
-        liquidHeightOffGround = LiquidControl.instance.liquidHeightOffGround;
-        liquidDepthBelowGround = LiquidControl.instance.liquidDepthBelowGround;
-        maxLedgePaint = LiquidControl.instance.maxLedgePaint;
-        minLedgeHeight = LiquidControl.instance.minLedgeHeight;
-        maxDistanceToGround = LiquidControl.instance.maxDistanceToGround;
-        maxWidth = LiquidControl.instance.maxWidth;
     }
 }

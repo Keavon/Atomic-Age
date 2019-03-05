@@ -11,14 +11,19 @@ public class PlayerController : MonoBehaviour {
 	public float climbSpeed = 1.0f;
 	public float jumpVelocity = 7.5f;
 
+    public GameObject liquidPrefab;
+
 	Rigidbody2D playerRigidbody;
 	GameObject activeInteractionTarget;
-	GameObject activeClimbTarget;
+    GameObject activeClimbTarget;
+	GameObject currentMoppingTarget;
+
 	List<GameObject> touchingGrounds = new List<GameObject>();
 	List<GameObject> touchingDraggablesDisqualified = new List<GameObject>();
 	List<GameObject> touchingDraggables = new List<GameObject>();
 	List<GameObject> touchingGrabbables = new List<GameObject>();
-	List<GameObject> touchingClimbables = new List<GameObject>();
+    List<GameObject> touchingClimbables = new List<GameObject>();
+	List<GameObject> liquidsPlaced = new List<GameObject>();
 
 	Animator stateMachine;
 
@@ -101,7 +106,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
     void StartMopping(){
-        LiquidControl.instance.Create(transform.position);
+        CreateLiquid(transform.position);
     }
 
 	void PerformWalking() {
@@ -155,7 +160,7 @@ public class PlayerController : MonoBehaviour {
         playerRigidbody.velocity = velocity;
 
         if (touchingGrounds.Any((ground) => ground.layer == 0)){
-            LiquidControl.instance.Redraw(moppingLocation);
+            ExtendLiquid(moppingLocation);
         }
     }
 
@@ -314,4 +319,18 @@ public class PlayerController : MonoBehaviour {
 	public void ExitedClimbable(GameObject climbable) {
 		if (touchingClimbables.Contains(climbable)) touchingClimbables.Remove(climbable);
 	}
+
+    public void CreateLiquid(Vector3 position)
+    {
+        GameObject liquid = Instantiate(liquidPrefab, new Vector3(0, 0, -1), Quaternion.identity);
+        liquid.GetComponent<LiquidBehavior>().Create(position);
+        currentMoppingTarget = liquid;
+        liquidsPlaced.Add(liquid);
+    }
+
+    public void ExtendLiquid(Vector3 position)
+    {
+        currentMoppingTarget.GetComponent<LiquidBehavior>().UpdateMesh(position);
+    }
+
 }

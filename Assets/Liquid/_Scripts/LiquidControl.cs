@@ -19,13 +19,6 @@ public class LiquidControl : MonoBehaviour {
     private GameObject currentLiquid;
     private List<GameObject> liquids = new List<GameObject>();
 
-    void Awake()
-    {
-        if (instance == null)
-            instance = this;
-        else if (instance != this)
-            Destroy(gameObject);
-    }
 
     public void Create(Vector3 position)
     {
