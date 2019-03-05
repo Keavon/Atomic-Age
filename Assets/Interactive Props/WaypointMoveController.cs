@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 
 public class WaypointMoveController : MonoBehaviour, IActionable {
 	public bool autoplay = false;
+	public bool ignoreY = false;
 	public Vector2[] waypoints;
 	public float[] intervals;
 
@@ -39,15 +40,15 @@ public class WaypointMoveController : MonoBehaviour, IActionable {
 		}
 
 		if (timeIntoWaypoint < duration && currentWaypoint < waypoints.Length - 1) {
-			Vector2 moveVector = waypoints[currentWaypoint + 1] - waypoints[currentWaypoint];
-			rb.velocity = new Vector2(moveVector.x / duration, rb.velocity.y); // TODO: TEMP
+			Vector2 moveVector = (waypoints[currentWaypoint + 1] - waypoints[currentWaypoint]) / duration;
+			rb.velocity = ignoreY ? new Vector2(moveVector.x, rb.velocity.y) : moveVector; // TODO: TEMP
 			timeIntoWaypoint += Time.deltaTime;
 		}
 		else {
-			rb.velocity = new Vector2(0, rb.velocity.y); // TODO: TEMP
-			playing = false;
+			rb.velocity = ignoreY ? new Vector2(0, rb.velocity.y) : Vector2.zero; // TODO: TEMP
 			currentWaypoint = 0;
 			timeIntoWaypoint = 0;
+			playing = false;
 		}
 	}
 

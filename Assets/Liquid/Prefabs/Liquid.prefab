@@ -109,7 +109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6211a713596b7e949aa42c388a120b24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  liquidDrips: {fileID: 0}
+  liquidDrips: {fileID: 212619679917931540, guid: 5291d9038fa11d2478df48742aa0ec2e,
+    type: 2}
   liquidDripSprites: []
   partitions: 50
   maxDistanceToGround: 0.5
