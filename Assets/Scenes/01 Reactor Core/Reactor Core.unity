@@ -334,7 +334,7 @@ GameObject:
   m_Component:
   - component: {fileID: 21577464}
   - component: {fileID: 21577465}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Elevator +0.9
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,7 +492,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 118739047}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Crates
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -755,7 +755,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 281323415}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: _Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -877,7 +877,7 @@ GameObject:
   m_Component:
   - component: {fileID: 356813319}
   - component: {fileID: 356813320}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Elevator Cables 0.0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1087,6 +1087,79 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!1 &394951428
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 394951429}
+  - component: {fileID: 394951430}
+  m_Layer: 0
+  m_Name: Backdrop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &394951429
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 394951428}
+  m_LocalRotation: {x: -0, y: 0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.17, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &394951430
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 394951428}
+  m_Enabled: 0
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 2100000, guid: 709d19adbfa809544880aa4500204006, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: -10
+  m_Sprite: {fileID: 21300000, guid: 0ecdcd2648993734eb60ab3c5354d47a, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 21.845333, y: 10.922667}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
 --- !u!1 &406871417
 GameObject:
   m_ObjectHideFlags: 0
@@ -1096,7 +1169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 406871418}
   - component: {fileID: 406871419}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Elevator -0.9
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1169,7 +1242,7 @@ GameObject:
   m_Component:
   - component: {fileID: 409929781}
   - component: {fileID: 409929782}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Elevator Cables 0.0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1262,7 +1335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 652459615744ec84b88675b2d4d8c2c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enabled: 0
+  enabled: 1
 --- !u!61 &410008617
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1776,7 +1849,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 7424332}
-  screenBounds: {fileID: 0}
+  screenBounds: {fileID: 394951428}
   minPan: -5
   maxPan: -1.75
   minRotation: 10
@@ -2133,7 +2206,7 @@ GameObject:
   m_Component:
   - component: {fileID: 646031660}
   - component: {fileID: 646031661}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Elevator 0.0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2320,6 +2393,10 @@ Prefab:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 6200000, guid: 755734d2e6e71a24aa00bd22845cb6fb, type: 2}
+    - target: {fileID: 1914673508322878, guid: 46119597cdeb8e742a9fe41c183fdb59, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 46119597cdeb8e742a9fe41c183fdb59, type: 2}
   m_IsPrefabParent: 0
@@ -2460,7 +2537,7 @@ GameObject:
   - component: {fileID: 820809827}
   - component: {fileID: 820809828}
   - component: {fileID: 820809829}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Elevator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2728,6 +2805,10 @@ Prefab:
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 6200000, guid: 755734d2e6e71a24aa00bd22845cb6fb, type: 2}
+    - target: {fileID: 1914673508322878, guid: 46119597cdeb8e742a9fe41c183fdb59, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 46119597cdeb8e742a9fe41c183fdb59, type: 2}
   m_IsPrefabParent: 0
@@ -2874,7 +2955,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoplay: 0
-  ignoreY: 1
+  ignoreY: 0
   waypoints:
   - {x: 4.7, y: -1.436}
   - {x: -4.75, y: -1.436}
@@ -3012,7 +3093,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 900442398}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: _Lights
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3485,7 +3566,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1095217620}
   - component: {fileID: 1095217621}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3539,7 +3620,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1122152534}
   - component: {fileID: 1122152535}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Ceiling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4323,6 +4404,10 @@ Prefab:
     - target: {fileID: 4346505632283880, guid: 46119597cdeb8e742a9fe41c183fdb59, type: 2}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 12.528001
+      objectReference: {fileID: 0}
+    - target: {fileID: 1914673508322878, guid: 46119597cdeb8e742a9fe41c183fdb59, type: 2}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 46119597cdeb8e742a9fe41c183fdb59, type: 2}
@@ -5220,7 +5305,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1896587971}
   - component: {fileID: 1896587972}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5444,7 +5529,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1936260396}
   - component: {fileID: 1936260397}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Point light (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5511,7 +5596,7 @@ GameObject:
   - component: {fileID: 1968858505}
   - component: {fileID: 1968858506}
   - component: {fileID: 1968858504}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Lever
   m_TagString: Grabbable
   m_Icon: {fileID: 0}
