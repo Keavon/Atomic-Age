@@ -211,6 +211,7 @@ MonoBehaviour:
   dragSpeed: 1
   climbSpeed: 2
   jumpVelocity: 7.5
+  liquidPrefab: {fileID: 0}
 --- !u!50 &7424336
 Rigidbody2D:
   serializedVersion: 4
@@ -2918,7 +2919,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1867828003}
-  - component: {fileID: 1867828004}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -2940,20 +2940,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!111 &1867828004
-Animation:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1867828002}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 42a7278493b1cc7469b90e5a900f643e, type: 2}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!1 &1896587970
 GameObject:
   m_ObjectHideFlags: 0
