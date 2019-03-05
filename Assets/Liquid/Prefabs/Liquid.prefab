@@ -111,3 +111,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   liquidDrips: {fileID: 0}
   liquidDripSprites: []
+  partitions: 50
+  maxDistanceToGround: 0.5
+  liquidHeightOffGround: 0.06
+  liquidDepthBelowGround: 0
+  maxLedgePaint: 0.4
+  minLedgeHeight: 0.1
+  maxWidth: 2
