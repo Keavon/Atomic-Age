@@ -31,7 +31,7 @@ public class LiquidBehavior : MonoBehaviour {
     private float height;
 
 
-    public void Create(Vector3 position)
+    public void Create(Vector3 position, PlayerController.Fluid fluid)
     {
         liquidMeshCollider = GetComponent<MeshCollider>();
         mesh = new Mesh();
@@ -41,6 +41,21 @@ public class LiquidBehavior : MonoBehaviour {
 
         rightBounds = leftBounds = position.x;
         height = position.y + 0.4f;
+
+        if (fluid == PlayerController.Fluid.Ferro)
+        {
+            gameObject.AddComponent<FerroFluidBehavior>();
+            gameObject.GetComponent<Renderer>().material.color = Color.grey;
+        }
+        else if (fluid == PlayerController.Fluid.Glue)
+        {
+            gameObject.AddComponent<GlueBehavior>();
+            gameObject.GetComponent<Renderer>().material.color = Color.white;
+        }
+        else if (fluid == PlayerController.Fluid.Oil)
+        {
+            // Unimplemented
+        }
     }
 
     public void UpdateMesh(Vector3 position)
@@ -284,4 +299,5 @@ public class LiquidBehavior : MonoBehaviour {
         triangles[triangles.Length - 1] = partitions + partitions * 2 + partitions - 1;
 
     }
+
 }

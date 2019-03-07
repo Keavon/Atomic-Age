@@ -7,6 +7,8 @@ TagManager:
   - Grabbable
   - Draggable
   - Climbable
+  - Metallic
+  - Crate
   layers:
   - Default
   - TransparentFX

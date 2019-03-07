@@ -27,6 +27,10 @@ public class PlayerController : MonoBehaviour {
 
 	Animator stateMachine;
 
+    public enum Fluid { Ferro, Glue, Oil };
+
+    private Fluid currentMoppingLiquid = Fluid.Ferro;
+
 	void Start() {
 		stateMachine = GetComponent<Animator>();
 		playerRigidbody = GetComponent<Rigidbody2D>();
@@ -67,9 +71,23 @@ public class PlayerController : MonoBehaviour {
         if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Dragging")) PerformDragging();
 
         if(stateMachine.GetBool("Input_MopPress")) StartMopping();
-	}
 
-	void PushPlayerAtSpeedHorizontally(float speed, float acceleration) {
+        // Hacky code to get 
+        if (Input.GetKeyUp(KeyCode.L))
+        {
+            currentMoppingLiquid = Fluid.Ferro;
+        }
+        if (Input.GetKeyUp(KeyCode.J))
+        {
+            currentMoppingLiquid = Fluid.Glue;
+        }
+        if (Input.GetKeyUp(KeyCode.K))
+        {
+            currentMoppingLiquid = Fluid.Oil;
+        }
+    }
+
+    void PushPlayerAtSpeedHorizontally(float speed, float acceleration) {
 		float difference = speed - playerRigidbody.velocity.x;
 		float momentaryForce = difference * acceleration;
 		Vector2 movementForce = new Vector2(momentaryForce, 0);
@@ -106,7 +124,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
     void StartMopping(){
-        CreateLiquid(transform.position);
+        CreateLiquid(transform.position, currentMoppingLiquid);
     }
 
 	void PerformWalking() {
@@ -166,7 +184,7 @@ public class PlayerController : MonoBehaviour {
             }
             else
             {
-                CreateLiquid(moppingLocation);
+                CreateLiquid(moppingLocation, currentMoppingLiquid);
             }
         }
     }
@@ -327,10 +345,10 @@ public class PlayerController : MonoBehaviour {
 		if (touchingClimbables.Contains(climbable)) touchingClimbables.Remove(climbable);
 	}
 
-    public void CreateLiquid(Vector3 position)
+    public void CreateLiquid(Vector3 position, Fluid fluid)
     {
         GameObject liquid = Instantiate(liquidPrefab, new Vector3(0, 0, -1), Quaternion.identity);
-        liquid.GetComponent<LiquidBehavior>().Create(position);
+        liquid.GetComponent<LiquidBehavior>().Create(position, fluid);
         currentMoppingTarget = liquid;
         liquidsPlaced.Add(liquid);
     }
