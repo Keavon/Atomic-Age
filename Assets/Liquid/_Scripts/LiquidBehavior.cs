@@ -8,6 +8,10 @@ public class LiquidBehavior : MonoBehaviour {
     public SpriteRenderer liquidDrips;
     public Sprite[] liquidDripSprites;
 
+    public PhysicsMaterial2D oilPhysicsMaterial;
+
+    public Material oilMaterial;
+
     public int partitions = 50;
     public float maxDistanceToGround = 0.5f;
     public float liquidHeightOffGround = 0.06f;
@@ -54,7 +58,9 @@ public class LiquidBehavior : MonoBehaviour {
         }
         else if (fluid == PlayerController.Fluid.Oil)
         {
-            // Unimplemented
+            gameObject.GetComponent<PolygonCollider2D>().sharedMaterial = oilPhysicsMaterial;
+            gameObject.GetComponent<Renderer>().material.color = Color.blue;
+            //gameObject.GetComponent<Renderer>().material = oilMaterial;
         }
     }
 
@@ -92,8 +98,8 @@ public class LiquidBehavior : MonoBehaviour {
         mesh.triangles = triangles;
 
         // Set collider bounds
-        mesh.RecalculateBounds();
-        liquidMeshCollider.sharedMesh = mesh;
+
+        GetComponent<PolygonCollider2D>().points = verts.Take(partitions * 2).Select((point) => new Vector2(point.x, point.y - 0.05f)).ToArray();
     }
 
 	private void AddMeshDepth()

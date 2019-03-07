@@ -19,21 +19,21 @@ public class InputManager : MonoBehaviour {
 
 	// Jump button presses
 	public static bool jumpPress() {
-		bool keyboard = Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W);
+		bool keyboard = Input.GetKeyDown(KeyCode.Space);
 		bool winGamepad = Input.GetKeyDown(KeyCode.Joystick1Button0);
 		bool macGamepad = Input.GetKeyDown(KeyCode.Joystick1Button16);
 		return keyboard || winGamepad || macGamepad;
 	}
 
 	public static bool jumpPressed() {
-		bool keyboard = Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W);
+		bool keyboard = Input.GetKey(KeyCode.Space);
 		bool winGamepad = Input.GetKey(KeyCode.Joystick1Button0);
 		bool macGamepad = Input.GetKey(KeyCode.Joystick1Button16);
 		return keyboard || winGamepad || macGamepad;
 	}
 
 	public static bool jumpRelease() {
-		bool keyboard = Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.W);
+		bool keyboard = Input.GetKeyUp(KeyCode.Space);
 		bool winGamepad = Input.GetKeyUp(KeyCode.Joystick1Button0);
 		bool macGamepad = Input.GetKeyUp(KeyCode.Joystick1Button16);
 		return keyboard || winGamepad || macGamepad;
@@ -63,21 +63,21 @@ public class InputManager : MonoBehaviour {
 
 	// Mop button presses
 	public static bool mopPress() {
-		bool keyboard = Input.GetKeyDown(KeyCode.Space);
+		bool keyboard = Input.GetKeyDown(KeyCode.Tab);
 		bool winGamepad = Input.GetKeyDown(KeyCode.Joystick1Button2);
 		bool macGamepad = Input.GetKeyDown(KeyCode.Joystick1Button18);
 		return keyboard || winGamepad || macGamepad;
 	}
 
 	public static bool mopPressed() {
-		bool keyboard = Input.GetKey(KeyCode.Space);
+		bool keyboard = Input.GetKey(KeyCode.Tab);
 		bool winGamepad = Input.GetKey(KeyCode.Joystick1Button2);
 		bool macGamepad = Input.GetKey(KeyCode.Joystick1Button18);
 		return keyboard || winGamepad || macGamepad;
 	}
 
 	public static bool mopRelease() {
-		bool keyboard = Input.GetKeyUp(KeyCode.Space);
+		bool keyboard = Input.GetKeyUp(KeyCode.Tab);
 		bool winGamepad = Input.GetKeyUp(KeyCode.Joystick1Button2);
 		bool macGamepad = Input.GetKeyUp(KeyCode.Joystick1Button18);
 		return keyboard || winGamepad || macGamepad;

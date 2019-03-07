@@ -9,11 +9,12 @@ public class FerroFluidBehavior : MonoBehaviour {
     public float yPushMultiplier = -0.7f;
 
 
-    private void OnTriggerEnter(Collider collider)
+    private void OnTriggerEnter2D(Collider2D collider2d)
     {
-        if (collider.gameObject.CompareTag("Crate"))
+        if (collider2d.gameObject.CompareTag("Crate"))
         {
-            Rigidbody2D metalObject = collider.gameObject.GetComponentInParent<Rigidbody2D>();
+            Debug.Log("Crate");
+            Rigidbody2D metalObject = collider2d.gameObject.GetComponent<Rigidbody2D>();
             float x = metalObject.velocity.x;
             float y = metalObject.velocity.y;
 

@@ -73,15 +73,15 @@ public class PlayerController : MonoBehaviour {
         if(stateMachine.GetBool("Input_MopPress")) StartMopping();
 
         // Hacky code to get 
-        if (Input.GetKeyUp(KeyCode.L))
+        if (Input.GetKeyUp(KeyCode.Alpha1))
         {
             currentMoppingLiquid = Fluid.Ferro;
         }
-        if (Input.GetKeyUp(KeyCode.J))
+        if (Input.GetKeyUp(KeyCode.Alpha2))
         {
             currentMoppingLiquid = Fluid.Glue;
         }
-        if (Input.GetKeyUp(KeyCode.K))
+        if (Input.GetKeyUp(KeyCode.Alpha3))
         {
             currentMoppingLiquid = Fluid.Oil;
         }
@@ -190,6 +190,12 @@ public class PlayerController : MonoBehaviour {
     }
 
 	void PerformClimbing() {
+        if (stateMachine.GetBool("Input_JumpPress")){
+            activeClimbTarget = null;
+            stateMachine.SetBool("Trigger_BreakClimbing", true);
+            return;
+        }
+
 		// Ensure there is a climb target
 		SelectClimbTarget();
 		if (activeClimbTarget == null) return;
