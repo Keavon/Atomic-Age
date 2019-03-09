@@ -135,7 +135,7 @@ MonoBehaviour:
   - {fileID: 21300010, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}
   - {fileID: 21300012, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}
   oilPhysicsMaterial: {fileID: 6200000, guid: fd17cbb4372fdd74992e8cc78a8e45fb, type: 2}
-  partitions: 150
+  partitions: 100
   liquidHeightOffGround: 0.07
   liquidDepthBelowGround: 0
   maxLedgePaint: 0.4
