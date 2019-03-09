@@ -79,7 +79,7 @@ public class LiquidBehavior : MonoBehaviour
         // Wait for creation to end before destroying.
         if (beingCreated)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.3f);
         }
         foreach (SpriteRenderer drip in GetComponentsInChildren<SpriteRenderer>())
         {
@@ -342,7 +342,7 @@ public class LiquidBehavior : MonoBehaviour
 
             RedrawMesh();
 
-            yield return new WaitForSeconds(0.000007f * Mathf.Pow(i, 2) / 4);
+            yield return new WaitForSeconds(0.000001f * Mathf.Pow(i, 2) / 4);
         }
 
         PlaceSideTriangles();
@@ -454,7 +454,7 @@ public class LiquidBehavior : MonoBehaviour
 
             RedrawMesh();
 
-            yield return new WaitForSeconds(0.000007f * Mathf.Pow(i, 2) / 10);
+            yield return new WaitForSeconds(0.00000001f * Mathf.Pow(i, 2) / 20);
         }
 
         // Remove the side triangles
