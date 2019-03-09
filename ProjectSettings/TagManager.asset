@@ -9,6 +9,9 @@ TagManager:
   - Climbable
   - Metallic
   - Crate
+  - Oil
+  - Glue
+  - Ferrofluid
   layers:
   - Default
   - TransparentFX
@@ -20,7 +23,7 @@ TagManager:
   - 
   - NonMoppable
   - Interactable
-  - 
+  - Liquids
   - 
   - 
   - 

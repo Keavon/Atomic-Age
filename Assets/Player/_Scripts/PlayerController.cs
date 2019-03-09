@@ -27,9 +27,7 @@ public class PlayerController : MonoBehaviour {
 
 	Animator stateMachine;
 
-    public enum Fluid { Ferro, Glue, Oil };
-
-    private Fluid currentMoppingLiquid = Fluid.Ferro;
+    private Fluid currentMoppingLiquid = Fluid.None;
 
 	void Start() {
 		stateMachine = GetComponent<Animator>();
@@ -55,36 +53,27 @@ public class PlayerController : MonoBehaviour {
 		if (InputManager.mopPress()) stateMachine.SetTrigger("Input_MopPressWait");
 		if (InputManager.mopRelease()) stateMachine.ResetTrigger("Input_MopPressWait");
 
-		// Set touching trigger states for player
-		stateMachine.SetBool("Touching_Ground", touchingGrounds.Count > 0);
-		stateMachine.SetBool("Touching_Climbable", touchingClimbables.Count > 0);
-		stateMachine.SetBool("Touching_Grabbable", touchingGrabbables.Count > 0);
-		int total = GetEligibleDraggables().Count;
-		stateMachine.SetBool("Touching_Draggable", total > 0);
+        // Set touching trigger states for player
+        stateMachine.SetBool("Touching_Ground", touchingGrounds.Count > 0);
+        stateMachine.SetBool("Touching_Climbable", touchingClimbables.Count > 0);
+        stateMachine.SetBool("Touching_Grabbable", touchingGrabbables.Count > 0);
+        int total = GetEligibleDraggables().Count;
+        stateMachine.SetBool("Touching_Draggable", total > 0);
 
-		// Perform the functionality of the active player state
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Walking")) PerformWalking();
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Falling")) PerformFalling();
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Mopping")) PerformMopping();
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Climbing")) PerformClimbing();
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Grabbing")) PerformGrabbing();
+        if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Mopping")) PerformMopping();
+        if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Climbing")) PerformClimbing();
+        if (stateMachine.GetBool("Input_MopPress")) StartMopping();
+    }
+
+    void FixedUpdate() {
+
+
+        // Perform the functionality of the active player state
+        if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Walking")) PerformWalking();
+        if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Falling")) PerformFalling();
+        if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Grabbing")) PerformGrabbing();
         if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Dragging")) PerformDragging();
 
-        if(stateMachine.GetBool("Input_MopPress")) StartMopping();
-
-        // Hacky code to get 
-        if (Input.GetKeyUp(KeyCode.Alpha1))
-        {
-            currentMoppingLiquid = Fluid.Ferro;
-        }
-        if (Input.GetKeyUp(KeyCode.Alpha2))
-        {
-            currentMoppingLiquid = Fluid.Glue;
-        }
-        if (Input.GetKeyUp(KeyCode.Alpha3))
-        {
-            currentMoppingLiquid = Fluid.Oil;
-        }
     }
 
     void PushPlayerAtSpeedHorizontally(float speed, float acceleration) {
@@ -124,7 +113,21 @@ public class PlayerController : MonoBehaviour {
 	}
 
     void StartMopping(){
-        CreateLiquid(transform.position, currentMoppingLiquid);
+        if (touchingGrounds.Any((ground) => ground.layer == 0)) {
+
+            // We have a liquid we can place.
+            if (currentMoppingLiquid != Fluid.None) {
+                PlaceLiquid(transform.position, currentMoppingLiquid);
+                currentMoppingLiquid = Fluid.None;
+            }
+            // We don't have a liquid, so lets see if we can pick any up
+            else {
+                CheckPickupLiquid(transform.position);
+            }
+        } else
+        {
+            CheckPickupLiquid(transform.position);
+        }
     }
 
 	void PerformWalking() {
@@ -176,17 +179,6 @@ public class PlayerController : MonoBehaviour {
 
         // Write player velocity
         playerRigidbody.velocity = velocity;
-
-        if (touchingGrounds.Any((ground) => ground.layer == 0)){
-            if (currentMoppingTarget != null)
-            {
-                ExtendLiquid(moppingLocation);
-            }
-            else
-            {
-                CreateLiquid(moppingLocation, currentMoppingLiquid);
-            }
-        }
     }
 
 	void PerformClimbing() {
@@ -351,17 +343,49 @@ public class PlayerController : MonoBehaviour {
 		if (touchingClimbables.Contains(climbable)) touchingClimbables.Remove(climbable);
 	}
 
-    public void CreateLiquid(Vector3 position, Fluid fluid)
-    {
+    private void PlaceLiquid(Vector3 position, Fluid fluid) {
         GameObject liquid = Instantiate(liquidPrefab, new Vector3(0, 0, -1), Quaternion.identity);
-        liquid.GetComponent<LiquidBehavior>().Create(position, fluid);
+        liquid.GetComponent<LiquidBehavior>().PlaceLiquid(position, fluid, 1.5f, 1.5f);
         currentMoppingTarget = liquid;
         liquidsPlaced.Add(liquid);
     }
 
-    public void ExtendLiquid(Vector3 position)
-    {
-        currentMoppingTarget.GetComponent<LiquidBehavior>().UpdateMesh(position);
+    private void CheckPickupLiquid(Vector3 position) {
+        Vector2 hitSize = new Vector2(1, 0.5f);
+        float distance = 1;
+        LayerMask moppableLayer = LayerMask.GetMask("Liquids");
+
+        Vector2 origin = new Vector2(position.x, position.y + 0.6f);
+
+        RaycastHit2D hit = Physics2D.BoxCast(origin, hitSize, 0, Vector2.down, distance, moppableLayer);
+
+        LiquidBehavior liquidBehavior = hit.collider.GetComponent<LiquidBehavior>();
+
+        // We found some lqiuid, so set our mop liquid
+        if (hit.collider != null) {
+
+            if (hit.collider.CompareTag("Oil")) {
+                currentMoppingLiquid = Fluid.Oil;
+            }
+
+            else if(hit.collider.CompareTag("Glue")) {
+                currentMoppingLiquid = Fluid.Glue;
+            }
+
+            else if(hit.collider.CompareTag("Ferrofluid")) {
+                currentMoppingLiquid = Fluid.Ferro;
+            }
+            else {
+
+            }
+            if (liquidBehavior) {
+                liquidBehavior.RemoveLiquid();
+            }
+            else {
+                Destroy(hit.collider.gameObject);
+
+            }
+        }
     }
 
 }

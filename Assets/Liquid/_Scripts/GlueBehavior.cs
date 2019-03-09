@@ -9,6 +9,7 @@ public class GlueBehavior : MonoBehaviour {
         if (collider2d.gameObject.CompareTag("Crate") && collider2d is BoxCollider2D)
         {
             Rigidbody2D crate = collider2d.gameObject.GetComponentInParent<Rigidbody2D>();
+            crate.isKinematic = true;
             crate.Sleep();
         }
     }

@@ -13,7 +13,6 @@ public class FerroFluidBehavior : MonoBehaviour {
     {
         if (collider2d.gameObject.CompareTag("Crate"))
         {
-            Debug.Log("Crate");
             Rigidbody2D metalObject = collider2d.gameObject.GetComponent<Rigidbody2D>();
             float x = metalObject.velocity.x;
             float y = metalObject.velocity.y;

@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 33304876113157536}
   - component: {fileID: 114079453712988232}
   - component: {fileID: 60645905014912818}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Liquid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,13 +126,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   liquidDrips: {fileID: 212619679917931540, guid: 5291d9038fa11d2478df48742aa0ec2e,
     type: 2}
-  liquidDripSprites: []
+  liquidDripSprites:
+  - {fileID: 21300000, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}
+  - {fileID: 21300002, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}
+  - {fileID: 21300004, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}
+  - {fileID: 21300006, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}
+  - {fileID: 21300008, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}
+  - {fileID: 21300010, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}
+  - {fileID: 21300012, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}
   oilPhysicsMaterial: {fileID: 6200000, guid: fd17cbb4372fdd74992e8cc78a8e45fb, type: 2}
-  oilMaterial: {fileID: 2100000, guid: 2e9befeec30709c4f99ec40d1613ceaf, type: 2}
-  partitions: 5
-  maxDistanceToGround: 0.5
-  liquidHeightOffGround: 0.06
+  partitions: 150
+  liquidHeightOffGround: 0.07
   liquidDepthBelowGround: 0
   maxLedgePaint: 0.4
   minLedgeHeight: 0.1
-  maxWidth: 1
+  maxDistanceToGround: 0.5
+  moppable:
+    serializedVersion: 2
+    m_Bits: 1
+  oilColor: {r: 0.4044118, g: 0, b: 0.32631835, a: 0}
+  glueColor: {r: 1, g: 1, b: 1, a: 0}
+  ferroColor: {r: 0.71323526, g: 0.71323526, b: 0.71323526, a: 0}
