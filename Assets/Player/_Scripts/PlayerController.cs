@@ -359,10 +359,10 @@ public class PlayerController : MonoBehaviour {
 
         RaycastHit2D hit = Physics2D.BoxCast(origin, hitSize, 0, Vector2.down, distance, moppableLayer);
 
-        LiquidBehavior liquidBehavior = hit.collider.GetComponent<LiquidBehavior>();
 
         // We found some lqiuid, so set our mop liquid
         if (hit.collider != null) {
+            LiquidBehavior liquidBehavior = hit.collider.GetComponent<LiquidBehavior>();
 
             if (hit.collider.CompareTag("Oil")) {
                 currentMoppingLiquid = Fluid.Oil;

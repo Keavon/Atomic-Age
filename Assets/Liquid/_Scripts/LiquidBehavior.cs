@@ -33,6 +33,7 @@ public class LiquidBehavior : MonoBehaviour
     private int rightDistance;
 
     private bool beingDestroyed = false;
+    private bool beingCreated = true;
 
     public void PlaceLiquid(Vector3 position, Fluid fluid, float left, float right)
     {
@@ -56,6 +57,7 @@ public class LiquidBehavior : MonoBehaviour
 
         FixLedges();
         AddMeshDepth();
+
         StartCoroutine(GenerateTrianglesAndDrips());
 
         // Set collider bounds
@@ -74,6 +76,11 @@ public class LiquidBehavior : MonoBehaviour
 
     IEnumerator RetractDripsAndDestroyTriangles()
     {
+        // Wait for creation to end before destroying.
+        if (beingCreated)
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
         foreach (SpriteRenderer drip in GetComponentsInChildren<SpriteRenderer>())
         {
             drip.GetComponent<DripBehavior>().Retract();
@@ -252,7 +259,7 @@ public class LiquidBehavior : MonoBehaviour
                 Debug.DrawRay(newRaycastPosition, Vector2.down, Color.blue, newDistance);
 
                 // We don't place liquid ontop of nearby ledges if they are sufficiently tall
-                if (Mathf.Abs(hit.point.y - hit2.point.y) > maxLedgePaint)
+                if (hit2.distance == 0 || Mathf.Abs(hit.point.y - hit2.point.y) > maxLedgePaint)
                 {
                     // Raycast didn't hit anything, stop drawing vertices
                     return false;
@@ -340,6 +347,7 @@ public class LiquidBehavior : MonoBehaviour
 
         PlaceSideTriangles();
         PlaceDrips();
+        beingCreated = false;
     }
 
     private void PlaceDrips()
@@ -441,7 +449,7 @@ public class LiquidBehavior : MonoBehaviour
         // Remove segments from the outside inwards
         for (int i = 0; i < maxDistance; i++)
         {
-            if (i > maxDistance - leftDistance) DestroyLiquidSegment(tNum, i - (maxDistance - leftDistance));
+            if (i > maxDistance - leftDistance) DestroyLiquidSegment(tNum, i - (maxDistance - leftDistance) - 1);
             if (i > maxDistance - rightDistance) DestroyLiquidSegment(tNum, totalDistance - i + (maxDistance - rightDistance));
 
             RedrawMesh();
