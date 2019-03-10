@@ -7,10 +7,14 @@ using System.Linq;
 public class LiquidBehavior : MonoBehaviour
 {
 
-    public SpriteRenderer liquidDrips;
+    public SpriteRenderer liquidDripsOil;
+    public SpriteRenderer liquidDripsGlue;
+    public SpriteRenderer liquidDripsFerro;
+
     public Sprite[] liquidDripSprites;
 
     public PhysicsMaterial2D oilPhysicsMaterial;
+    public PhysicsMaterial2D gluePhysicsMaterial;
 
     public int partitions;
     public float liquidHeightOffGround;
@@ -18,14 +22,24 @@ public class LiquidBehavior : MonoBehaviour
     public float maxLedgePaint;
     public float minLedgeHeight;
     public float maxDistanceToGround;
+
     public LayerMask moppable;
     public Color oilColor;
     public Color glueColor;
     public Color ferroColor;
 
+    public float animSpeed = 0.000001f;
+
+    public Vector3 location;
+    public Vector3 leftLocation;
+    public Vector3 rightLocation;
+
+
     private Vector3[] verts;
     private int[] triangles;
     private Color[] vertColors;
+
+    private SpriteRenderer liquidDrips;
 
     private Mesh mesh;
 
@@ -35,18 +49,27 @@ public class LiquidBehavior : MonoBehaviour
     private bool beingDestroyed = false;
     private bool beingCreated = true;
 
-    public void PlaceLiquid(Vector3 position, Fluid fluid, float left, float right)
+    private float left, right;
+
+
+
+    public void PlaceLiquid(Vector3 position, Fluid fluid, bool doAnimation)
     {
-
-        MeshCollider liquidMeshCollider = GetComponent<MeshCollider>();
+        // Set mesh
         mesh = new Mesh();
-
         GetComponent<MeshFilter>().mesh = mesh;
+
+        // Set position
+        location = position;
 
         // Set properties for placed liquid
         SetLiquid(fluid);
 
         FillVerticesArray(position, left, right);
+
+        // Set furthest points left and right
+        leftLocation = verts[0];
+        rightLocation = verts[leftDistance + rightDistance - 2];
 
         // No vertices could be placed, we're done
         if (verts.Length == 0)
@@ -58,7 +81,7 @@ public class LiquidBehavior : MonoBehaviour
         FixLedges();
         AddMeshDepth();
 
-        StartCoroutine(GenerateTrianglesAndDrips());
+        StartCoroutine(GenerateTrianglesAndDrips(doAnimation));
 
         // Set collider bounds
         SetColliderBounds();
@@ -96,21 +119,25 @@ public class LiquidBehavior : MonoBehaviour
             gameObject.GetComponent<PolygonCollider2D>().sharedMaterial = oilPhysicsMaterial;
             gameObject.tag = "Oil";
             gameObject.GetComponent<Renderer>().material.color = oilColor;
-            liquidDrips.GetComponent<SpriteRenderer>().color = oilColor;
+            liquidDrips = liquidDripsOil;
+            left = right = 2f;
         }
         else if (fluid == Fluid.Glue)
         {
+            gameObject.GetComponent<PolygonCollider2D>().sharedMaterial = gluePhysicsMaterial;
             gameObject.AddComponent<GlueBehavior>();
             gameObject.tag = "Glue";
             gameObject.GetComponent<Renderer>().material.color = glueColor;
-            liquidDrips.GetComponent<SpriteRenderer>().color = glueColor;
+            liquidDrips = liquidDripsGlue;
+            left = right = 1f;
         }
         else if (fluid == Fluid.Ferro)
         {
             gameObject.AddComponent<FerroFluidBehavior>();
             gameObject.tag = "Ferrofluid";
             gameObject.GetComponent<Renderer>().material.color = ferroColor;
-            liquidDrips.GetComponent<SpriteRenderer>().color = ferroColor;
+            liquidDrips = liquidDripsFerro;
+            left = right = 0.5f;
         }
     }
 
@@ -151,7 +178,6 @@ public class LiquidBehavior : MonoBehaviour
 
         bool stoppedRight = false;
         bool stoppedLeft = false;
-
 
         List<Vector3> rightVerticesTop = new List<Vector3>();
         List<Vector3> leftVerticesTop = new List<Vector3>();
@@ -211,35 +237,14 @@ public class LiquidBehavior : MonoBehaviour
         verts = vertices.ToArray();
     }
 
-    private void TaperLiquid(List<Vector3> vertciesLeft, List<Vector3> vertciesRight)
-    {
-
-        for (int i = 0; i < vertciesLeft.Count(); i++)
-        {
-            float subHeight = Mathf.Pow((float) i / vertciesLeft.Count(), 5);
-            float taperedHeight = vertciesLeft[i].y - subHeight * liquidHeightOffGround;
-
-            vertciesLeft[i] = new Vector3(vertciesLeft[i].x, taperedHeight, vertciesLeft[i].z);
-        }
-
-        for (int i = 0; i < vertciesRight.Count(); i++)
-        {
-            float subHeight = Mathf.Pow((float) i / vertciesRight.Count(), 5);
-            float taperedHeight = vertciesRight[i].y - subHeight * liquidHeightOffGround;
-
-            vertciesRight[i] = new Vector3(vertciesRight[i].x, taperedHeight, vertciesRight[i].z);
-        }
-
-    }
-
     private bool FindTopography(List<Vector3> vertciesTop, List<Vector3> vertciesBottom, Vector3 position, float xPos)
     {
         Vector3 raycastPosition = new Vector3(xPos, position.y, position.z);
         RaycastHit2D hit = Physics2D.Raycast(raycastPosition, Vector2.down, maxDistanceToGround, moppable);
+        Debug.DrawRay(raycastPosition, Vector2.down, Color.red, maxDistanceToGround);
 
         if (hit.collider != null)
         {
-            Debug.DrawRay(raycastPosition, Vector2.down, Color.red, maxDistanceToGround);
             // Raycast is inside of collider, try again at the max height of the collider
             if (hit.distance == 0)
             {
@@ -278,6 +283,26 @@ public class LiquidBehavior : MonoBehaviour
         return false;
     }
 
+    private void TaperLiquid(List<Vector3> vertciesLeft, List<Vector3> vertciesRight)
+    {
+
+        for (int i = 0; i < vertciesLeft.Count(); i++)
+        {
+            float subHeight = Mathf.Pow((float)i / vertciesLeft.Count(), 5);
+            float taperedHeight = vertciesLeft[i].y - subHeight * liquidHeightOffGround;
+
+            vertciesLeft[i] = new Vector3(vertciesLeft[i].x, taperedHeight, vertciesLeft[i].z);
+        }
+
+        for (int i = 0; i < vertciesRight.Count(); i++)
+        {
+            float subHeight = Mathf.Pow((float)i / vertciesRight.Count(), 5);
+            float taperedHeight = vertciesRight[i].y - subHeight * liquidHeightOffGround;
+
+            vertciesRight[i] = new Vector3(vertciesRight[i].x, taperedHeight, vertciesRight[i].z);
+        }
+
+    }
 
     private void RemoveDeletedVertices(int deletedVertexCount)
     {
@@ -326,11 +351,9 @@ public class LiquidBehavior : MonoBehaviour
         }
     }
 
-    IEnumerator GenerateTrianglesAndDrips()
+    IEnumerator GenerateTrianglesAndDrips(bool doAnimation)
     {
         triangles = new int[verts.Length * 2 * 3 + 12];
-
-        int halfway = (partitions - 1) / 2;
 
         int maxDistance = leftDistance > rightDistance ? leftDistance : rightDistance;
 
@@ -341,24 +364,26 @@ public class LiquidBehavior : MonoBehaviour
             if (i <= rightDistance - 1) DrawLiquidSegment(tNum, leftDistance + i - 1);
 
             RedrawMesh();
-
-            yield return new WaitForSeconds(0.000001f * Mathf.Pow(i, 2) / 4);
+            if (doAnimation){
+                yield return new WaitForSeconds(animSpeed * Mathf.Pow(i, 2) / 4);
+            }
         }
 
         PlaceSideTriangles();
-        PlaceDrips();
+        PlaceDrips(doAnimation);
         beingCreated = false;
     }
 
-    private void PlaceDrips()
+    private void PlaceDrips(bool doAnimation)
     {
         for (int i = 1; i < partitions - 1; i++)
         {
             // Place drip prefabs
             if (i > 9 && i < partitions - 9 && i % 10 == 0)
             {
-                Vector3 position = new Vector3(verts[i].x, verts[i].y - liquidDepthBelowGround - liquidHeightOffGround + 0.01f, -1);
+                Vector3 position = new Vector3(verts[i].x, verts[i].y - liquidDepthBelowGround - liquidHeightOffGround + 0.01f, -1.01f);
                 SpriteRenderer drips = Instantiate(liquidDrips, position, Quaternion.identity);
+                if (doAnimation) drips.GetComponent<DripBehavior>().Extend();
                 drips.transform.parent = gameObject.transform;
                 liquidDrips.sprite = liquidDripSprites[Random.Range(0, liquidDripSprites.Length)];
             }
@@ -439,10 +464,7 @@ public class LiquidBehavior : MonoBehaviour
 
     IEnumerator DestroyTriangles()
     {
-        int halfway = (partitions - 1) / 2;
-
         int maxDistance = leftDistance > rightDistance ? leftDistance : rightDistance;
-
         int totalDistance = leftDistance + rightDistance;
 
         int tNum = 24;
