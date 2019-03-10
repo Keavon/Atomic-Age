@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour {
 	public float climbSpeed = 1.0f;
 	public float jumpVelocity = 7.5f;
 
+	public GameObject animationRun;
+	public GameObject animationStandstill;
+
     public GameObject liquidPrefab;
 
 	Rigidbody2D playerRigidbody;
@@ -155,6 +158,22 @@ public class PlayerController : MonoBehaviour {
 		if (motion.x <= -0.5 || motion.x >= 0.5) {
 			float targetSpeed = walkSpeed * motion.x;
 			PushPlayerAtSpeedHorizontally(targetSpeed, accelerationToTargetSpeed);
+
+			animationRun.SetActive(true);
+			animationStandstill.SetActive(false);
+			Vector3 scale = transform.localScale;
+			if (motion.x > 0) {
+				scale.x = Mathf.Abs(scale.x);
+				transform.localScale = scale;
+			}
+			else {
+				scale.x = -Mathf.Abs(scale.x);
+				transform.localScale = scale;
+			}
+		}
+		else {
+			animationRun.SetActive(false);
+			animationStandstill.SetActive(true);
 		}
 	}
 
