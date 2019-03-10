@@ -26,7 +26,7 @@ GameObject:
   - component: {fileID: 114900911082501984}
   - component: {fileID: 61266284609376780}
   m_Layer: 9
-  m_Name: Wire Tank Crate
+  m_Name: Heavy Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,7 +59,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: e97cfb8b574a54a469c1b4a9af37404f, type: 2}
+  - {fileID: 2100000, guid: 8fb2961e9e8678640871d98ffdd5ef7f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
