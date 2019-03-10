@@ -8,7 +8,7 @@ public class GlueBehavior : MonoBehaviour {
     {
         if (collider2d.gameObject.CompareTag("Crate"))
         {
-            Rigidbody2D crate = collider2d.gameObject.GetComponentInParent<Rigidbody2D>();
+            Rigidbody2D crate = collider2d.gameObject.GetComponent<Rigidbody2D>();
             crate.velocity = Vector3.zero;
         }
     }

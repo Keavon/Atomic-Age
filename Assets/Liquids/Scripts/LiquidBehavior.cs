@@ -237,9 +237,11 @@ public class LiquidBehavior : MonoBehaviour
         verts = vertices.ToArray();
     }
 
-    private bool FindTopography(List<Vector3> vertciesTop, List<Vector3> vertciesBottom, Vector3 position, float xPos)
+    private bool FindTopography(List<Vector3> verticesTop, List<Vector3> verticesBottom, Vector3 position, float xPos)
     {
-        Vector3 raycastPosition = new Vector3(xPos, position.y, position.z);
+        float yPos = verticesTop.Count() > 0 ? verticesTop[verticesTop.Count() - 1].y + 0.01f : position.y;
+
+        Vector3 raycastPosition = new Vector3(xPos, yPos, position.z);
         RaycastHit2D hit = Physics2D.Raycast(raycastPosition, Vector2.down, maxDistanceToGround, moppable);
         Debug.DrawRay(raycastPosition, Vector2.down, Color.red, maxDistanceToGround);
 
@@ -270,13 +272,13 @@ public class LiquidBehavior : MonoBehaviour
                     return false;
                 }
 
-                vertciesTop.Add(new Vector3(hit2.point.x, hit2.point.y + liquidHeightOffGround));
-                vertciesBottom.Add(new Vector3(hit2.point.x, hit2.point.y - liquidDepthBelowGround));
+                verticesTop.Add(new Vector3(hit2.point.x, hit2.point.y + liquidHeightOffGround));
+                verticesBottom.Add(new Vector3(hit2.point.x, hit2.point.y - liquidDepthBelowGround));
                 return true;
             }
-            vertciesTop.Add(new Vector3(hit.point.x, hit.point.y + liquidHeightOffGround));
+            verticesTop.Add(new Vector3(hit.point.x, hit.point.y + liquidHeightOffGround));
             // Store lower vertices in second half
-            vertciesBottom.Add(new Vector3(hit.point.x, hit.point.y - liquidDepthBelowGround));
+            verticesBottom.Add(new Vector3(hit.point.x, hit.point.y - liquidDepthBelowGround));
             return true;
         }
         // Raycast didn't hit anything, stop drawing vertice
