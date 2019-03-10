@@ -124,7 +124,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6211a713596b7e949aa42c388a120b24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  liquidDrips: {fileID: 212356525080146522, guid: 235ad5e77d2cb4f43b4b416798619669,
+  liquidDripsOil: {fileID: 212356525080146522, guid: 326e4b804bd6441dcac7dd37cb9f0bdb,
+    type: 2}
+  liquidDripsGlue: {fileID: 212356525080146522, guid: 106489fa8bd5942f0833a1895ee7504a,
+    type: 2}
+  liquidDripsFerro: {fileID: 212356525080146522, guid: 920ccdb8551294ccba396eff13e134a0,
     type: 2}
   liquidDripSprites:
   - {fileID: 21300000, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}

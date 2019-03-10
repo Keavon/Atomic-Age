@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212356525080146522}
   - component: {fileID: 114264001520735528}
   m_Layer: 0
-  m_Name: Drip
+  m_Name: DripGlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 66a8a4cd9f1648c48b4033aab9b5018d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -87,7 +87,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300010, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}
+  m_Sprite: {fileID: 21300002, guid: b34b8bcb6fe439e46bad05d19d9d5a5a, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

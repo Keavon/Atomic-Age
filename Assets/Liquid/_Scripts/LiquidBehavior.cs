@@ -7,10 +7,14 @@ using System.Linq;
 public class LiquidBehavior : MonoBehaviour
 {
 
-    public SpriteRenderer liquidDrips;
+    public SpriteRenderer liquidDripsOil;
+    public SpriteRenderer liquidDripsGlue;
+    public SpriteRenderer liquidDripsFerro;
+
     public Sprite[] liquidDripSprites;
 
     public PhysicsMaterial2D oilPhysicsMaterial;
+    public PhysicsMaterial2D gluePhysicsMaterial;
 
     public int partitions;
     public float liquidHeightOffGround;
@@ -18,14 +22,24 @@ public class LiquidBehavior : MonoBehaviour
     public float maxLedgePaint;
     public float minLedgeHeight;
     public float maxDistanceToGround;
+
     public LayerMask moppable;
     public Color oilColor;
     public Color glueColor;
     public Color ferroColor;
 
+    public float animSpeed = 0.000001f;
+
+    public Vector3 location;
+    public Vector3 leftLocation;
+    public Vector3 rightLocation;
+
+
     private Vector3[] verts;
     private int[] triangles;
     private Color[] vertColors;
+
+    private SpriteRenderer liquidDrips;
 
     private Mesh mesh;
 
@@ -35,11 +49,16 @@ public class LiquidBehavior : MonoBehaviour
     private bool beingDestroyed = false;
     private bool beingCreated = true;
 
-    public void PlaceLiquid(Vector3 position, Fluid fluid, float left, float right)
-    {
 
+
+
+
+    public void PlaceLiquid(Vector3 position, Fluid fluid, float left, float right, bool doAnimation)
+    {
         MeshCollider liquidMeshCollider = GetComponent<MeshCollider>();
         mesh = new Mesh();
+
+        location = position;
 
         GetComponent<MeshFilter>().mesh = mesh;
 
@@ -47,6 +66,10 @@ public class LiquidBehavior : MonoBehaviour
         SetLiquid(fluid);
 
         FillVerticesArray(position, left, right);
+
+        // Set furthest points left and right
+        leftLocation = verts[0];
+        rightLocation = verts[partitions];
 
         // No vertices could be placed, we're done
         if (verts.Length == 0)
@@ -58,7 +81,7 @@ public class LiquidBehavior : MonoBehaviour
         FixLedges();
         AddMeshDepth();
 
-        StartCoroutine(GenerateTrianglesAndDrips());
+        StartCoroutine(GenerateTrianglesAndDrips(doAnimation));
 
         // Set collider bounds
         SetColliderBounds();
@@ -96,21 +119,22 @@ public class LiquidBehavior : MonoBehaviour
             gameObject.GetComponent<PolygonCollider2D>().sharedMaterial = oilPhysicsMaterial;
             gameObject.tag = "Oil";
             gameObject.GetComponent<Renderer>().material.color = oilColor;
-            liquidDrips.GetComponent<SpriteRenderer>().color = oilColor;
+            liquidDrips = liquidDripsOil;
         }
         else if (fluid == Fluid.Glue)
         {
+            gameObject.GetComponent<PolygonCollider2D>().sharedMaterial = gluePhysicsMaterial;
             gameObject.AddComponent<GlueBehavior>();
             gameObject.tag = "Glue";
             gameObject.GetComponent<Renderer>().material.color = glueColor;
-            liquidDrips.GetComponent<SpriteRenderer>().color = glueColor;
+            liquidDrips = liquidDripsGlue;
         }
         else if (fluid == Fluid.Ferro)
         {
             gameObject.AddComponent<FerroFluidBehavior>();
             gameObject.tag = "Ferrofluid";
             gameObject.GetComponent<Renderer>().material.color = ferroColor;
-            liquidDrips.GetComponent<SpriteRenderer>().color = ferroColor;
+            liquidDrips = liquidDripsFerro;
         }
     }
 
@@ -326,7 +350,7 @@ public class LiquidBehavior : MonoBehaviour
         }
     }
 
-    IEnumerator GenerateTrianglesAndDrips()
+    IEnumerator GenerateTrianglesAndDrips(bool doAnimation)
     {
         triangles = new int[verts.Length * 2 * 3 + 12];
 
@@ -341,16 +365,17 @@ public class LiquidBehavior : MonoBehaviour
             if (i <= rightDistance - 1) DrawLiquidSegment(tNum, leftDistance + i - 1);
 
             RedrawMesh();
-
-            yield return new WaitForSeconds(0.000001f * Mathf.Pow(i, 2) / 4);
+            if (doAnimation){
+                yield return new WaitForSeconds(animSpeed * Mathf.Pow(i, 2) / 4);
+            }
         }
 
         PlaceSideTriangles();
-        PlaceDrips();
+        PlaceDrips(doAnimation);
         beingCreated = false;
     }
 
-    private void PlaceDrips()
+    private void PlaceDrips(bool doAnimation)
     {
         for (int i = 1; i < partitions - 1; i++)
         {
@@ -359,6 +384,7 @@ public class LiquidBehavior : MonoBehaviour
             {
                 Vector3 position = new Vector3(verts[i].x, verts[i].y - liquidDepthBelowGround - liquidHeightOffGround + 0.01f, -1);
                 SpriteRenderer drips = Instantiate(liquidDrips, position, Quaternion.identity);
+                if (doAnimation) drips.GetComponent<DripBehavior>().Extend();
                 drips.transform.parent = gameObject.transform;
                 liquidDrips.sprite = liquidDripSprites[Random.Range(0, liquidDripSprites.Length)];
             }

@@ -4,21 +4,24 @@ using UnityEngine;
 
 public class FerroFluidBehavior : MonoBehaviour {
 
-    public float yPushScalar = 1;
-    public float xPushMultiplier = 1.5f;
-    public float yPushMultiplier = -0.7f;
+    public float maxDistance = 1.0f;
 
-
-    private void OnTriggerEnter2D(Collider2D collider2d)
+    private void FixedUpdate()
     {
-        if (collider2d.gameObject.CompareTag("Crate"))
+        foreach(GameObject crate in GameObject.FindGameObjectsWithTag("Crate"))
         {
-            Rigidbody2D metalObject = collider2d.gameObject.GetComponent<Rigidbody2D>();
-            float x = metalObject.velocity.x;
-            float y = metalObject.velocity.y;
+            float distanceMiddle = (crate.transform.position - GetComponent<LiquidBehavior>().location).magnitude;
+            float distanceLeft = (crate.transform.position - GetComponent<LiquidBehavior>().leftLocation).magnitude;
+            float distanceRight = (crate.transform.position - GetComponent<LiquidBehavior>().rightLocation).magnitude;
 
-            Vector2 push = new Vector2(xPushMultiplier * x, yPushScalar + yPushMultiplier * y);
-            metalObject.velocity = push;
+            float distance = Mathf.Min(distanceLeft, distanceRight, distanceMiddle);
+
+            float distanceClamped = Mathf.Min(distance, 1.0f);
+            float force = 1.0f / distanceClamped - 1;
+            float dampedForce = force * 0.9f;
+
+            crate.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10000f * dampedForce));
+
         }
     }
 }

@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class GlueBehavior : MonoBehaviour {
 
-    private void OnTriggerEnter2D(Collider2D collider2d)
+    private void OnTriggerStay2D(Collider2D collider2d)
     {
         if (collider2d.gameObject.CompareTag("Crate") && collider2d is BoxCollider2D)
         {
             Rigidbody2D crate = collider2d.gameObject.GetComponentInParent<Rigidbody2D>();
-            crate.isKinematic = true;
-            crate.Sleep();
+            crate.velocity = Vector3.zero;
         }
     }
 }

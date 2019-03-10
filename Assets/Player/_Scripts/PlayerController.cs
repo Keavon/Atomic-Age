@@ -345,7 +345,7 @@ public class PlayerController : MonoBehaviour {
 
     private void PlaceLiquid(Vector3 position, Fluid fluid) {
         GameObject liquid = Instantiate(liquidPrefab, new Vector3(0, 0, -1), Quaternion.identity);
-        liquid.GetComponent<LiquidBehavior>().PlaceLiquid(position, fluid, 1.5f, 1.5f);
+        liquid.GetComponent<LiquidBehavior>().PlaceLiquid(position, fluid, 1.5f, 1.5f, true);
         currentMoppingTarget = liquid;
         liquidsPlaced.Add(liquid);
     }

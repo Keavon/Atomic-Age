@@ -11,6 +11,7 @@ public class DripBehavior : MonoBehaviour {
     private float startTime;
 
     private bool retracting = false;
+    private bool extending = false;
 
     private void Start()
     {
@@ -21,13 +22,18 @@ public class DripBehavior : MonoBehaviour {
 
     void Update () {
         float distCovered = (Time.time - startTime) * speed;
-        if (!retracting)
+
+        if (extending)
         {
             transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, distCovered);
         }
-        else
+        else if (retracting)
         {
             transform.localScale = Vector3.Lerp(Vector3.one, Vector3.zero, distCovered);
+        } 
+        else
+        {
+            transform.localScale = Vector3.one;
         }
     }
 
@@ -36,5 +42,9 @@ public class DripBehavior : MonoBehaviour {
         retracting = true;
         startTime = Time.time;
         speed *= 3;
+    }
+
+    public void Extend(){
+        extending = true;
     }
 }
