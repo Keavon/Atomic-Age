@@ -55,12 +55,12 @@ public class LiquidBehavior : MonoBehaviour
 
     public void PlaceLiquid(Vector3 position, Fluid fluid, float left, float right, bool doAnimation)
     {
-        MeshCollider liquidMeshCollider = GetComponent<MeshCollider>();
+        // Set mesh
         mesh = new Mesh();
-
-        location = position;
-
         GetComponent<MeshFilter>().mesh = mesh;
+
+        // Set position
+        location = position;
 
         // Set properties for placed liquid
         SetLiquid(fluid);
@@ -354,8 +354,6 @@ public class LiquidBehavior : MonoBehaviour
     {
         triangles = new int[verts.Length * 2 * 3 + 12];
 
-        int halfway = (partitions - 1) / 2;
-
         int maxDistance = leftDistance > rightDistance ? leftDistance : rightDistance;
 
         int tNum = 24;
@@ -465,10 +463,7 @@ public class LiquidBehavior : MonoBehaviour
 
     IEnumerator DestroyTriangles()
     {
-        int halfway = (partitions - 1) / 2;
-
         int maxDistance = leftDistance > rightDistance ? leftDistance : rightDistance;
-
         int totalDistance = leftDistance + rightDistance;
 
         int tNum = 24;
