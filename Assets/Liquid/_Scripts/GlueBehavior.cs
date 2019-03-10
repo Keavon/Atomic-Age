@@ -6,7 +6,7 @@ public class GlueBehavior : MonoBehaviour {
 
     private void OnTriggerStay2D(Collider2D collider2d)
     {
-        if (collider2d.gameObject.CompareTag("Crate") && collider2d is BoxCollider2D)
+        if (collider2d.gameObject.CompareTag("Crate"))
         {
             Rigidbody2D crate = collider2d.gameObject.GetComponentInParent<Rigidbody2D>();
             crate.velocity = Vector3.zero;

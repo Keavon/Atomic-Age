@@ -40,6 +40,7 @@ public class DripBehavior : MonoBehaviour {
     public void Retract()
     {
         retracting = true;
+        extending = false;
         startTime = Time.time;
         speed *= 3;
     }

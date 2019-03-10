@@ -12,6 +12,6 @@ public class PreplacedLiquid : MonoBehaviour {
 	// Use this for initialization
 	void Awake() {
 		GameObject liquid = Instantiate(liquidPrefab, new Vector3(0, 0, -1), Quaternion.identity);
-		liquid.GetComponent<LiquidBehavior>().PlaceLiquid(transform.position, fluid, 1.5f, 1.5f, false);
+		liquid.GetComponent<LiquidBehavior>().PlaceLiquid(transform.position, fluid,  false);
 	}
 }

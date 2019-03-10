@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class LaserBehavior : MonoBehaviour {
 
-    public int lengthOfLineRenderer = 1;
+    public float speed;
+
+    private int lengthOfLineRenderer = 2;
 
     private void Start()
     {
@@ -33,7 +35,7 @@ public class LaserBehavior : MonoBehaviour {
             lineRenderer.SetPosition(1, transform.position + transform.up * 10);
         }
 
-        transform.Rotate(0.0f, 0.0f, 1f);
+        transform.Rotate(0.0f, 0.0f, 1f * speed);
     }
 }
 
