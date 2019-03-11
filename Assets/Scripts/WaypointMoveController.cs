@@ -13,6 +13,7 @@ public class WaypointMoveController : MonoBehaviour, IActionable {
 	int currentWaypoint = 0;
 	float timeIntoWaypoint = 0;
 	bool playing = false;
+	Vector2[] waypointGroup;
 
 	public void OnValidate() {
 		
@@ -23,9 +24,12 @@ public class WaypointMoveController : MonoBehaviour, IActionable {
 	}
 
 	public void Run(params int[] inputs) {
-		Assert.AreEqual(waypoints.Length - 1, intervals.Length);
+		Assert.AreEqual(waypoints.Length, intervals.Length);
 
 		rb = GetComponent<Rigidbody2D>();
+		waypointGroup = new Vector2[waypoints.Length + 1];
+		waypointGroup[0] = rb.position;
+		System.Array.Copy(waypoints, 0, waypointGroup, 1, waypoints.Length);
 		playing = true;
 	}
 
@@ -34,13 +38,13 @@ public class WaypointMoveController : MonoBehaviour, IActionable {
 
 		float duration = intervals[currentWaypoint];
 
-		if (timeIntoWaypoint >= duration && currentWaypoint < waypoints.Length - 1) {
+		if (timeIntoWaypoint >= duration && currentWaypoint < waypointGroup.Length - 1) {
 			currentWaypoint++;
 			timeIntoWaypoint = 0;
 		}
 
-		if (timeIntoWaypoint < duration && currentWaypoint < waypoints.Length - 1) {
-			Vector2 moveVector = (waypoints[currentWaypoint + 1] - waypoints[currentWaypoint]) / duration;
+		if (timeIntoWaypoint < duration && currentWaypoint < waypointGroup.Length - 1) {
+			Vector2 moveVector = (waypointGroup[currentWaypoint + 1] - waypointGroup[currentWaypoint]) / duration;
 			rb.velocity = ignoreY ? new Vector2(moveVector.x, rb.velocity.y) : moveVector; // TODO: TEMP
 			timeIntoWaypoint += Time.deltaTime;
 		}
