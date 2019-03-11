@@ -14,6 +14,9 @@ public class InputManager : MonoBehaviour {
 		float down = (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)) ? -1 : 0;
 		float vertical = Input.GetAxisRaw("Vertical");
 		float y = Mathf.Clamp(up + down + vertical, -1, 1);
+		Vector2 vector = new Vector2(x, y);
+		
+		if (vector.magnitude > 1) return vector.normalized;
 		return new Vector3(x, y);
 	}
 
