@@ -4,52 +4,54 @@ using UnityEngine;
 
 public class FlowBehavior : MonoBehaviour {
 
-    public GameObject deathReactor;
-    public float moveVertical = 0.5f;
+    public GameObject mainWater;
+    public GameObject sideWater;
     private bool overflow = false;
-    private bool widen = false;
     private int count = 0;
     private float timer = 0.0f;
     private BoxCollider2D coll;
 
     // Use this for initialization
     void Start () {
-        coll = deathReactor.GetComponent<BoxCollider2D>();
     }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
         if (overflow)
         {
-            Vector3 v = gameObject.transform.position;
-            Vector3 w = gameObject.transform.localScale;
+            Vector3 u = sideWater.transform.position;
+            Vector3 v = mainWater.transform.position;
+            Vector3 w = mainWater.transform.localScale;
             if (count < 20)
             {
                 v.y += 0.5f * Time.deltaTime/2;
-                gameObject.transform.position = v;
+                mainWater.transform.position = v;
                 count++;
                 timer = Time.time;
 
             }
             if(count >= 20 && (Time.time -timer) > 0.1)
             {
-                w.x = 1.45f;
-                if (count < 125)
+                if(count < 70)
+                {
+                    u.y += 0.5f * Time.deltaTime / 2;
+                    gameObject.transform.position = u;
+                    count++;
+                }
+                if(count >= 70)
+                {
+                    w.x = 15f;
+
+                }
+                if (count < 145)
                 {
                     v.y += 0.5f * Time.deltaTime/2;
-                    gameObject.transform.position = v;
-                    gameObject.transform.localScale = w;
-                    coll.size += new Vector2(0.07f, 0.038f);
+                    mainWater.transform.position = v;
+                    mainWater.transform.localScale = w;
                     count++;
 
 
                 }
-
-                /*v.y = -5.5f;
-                    w.x = 1.53f;
-                    gameObject.transform.position = v;
-                    gameObject.transform.localScale = w;
-                    deathReactor.GetComponent<BoxCollider2D>().size = new Vector2(16.64f, 5.4f);*/
             }
         }
 
@@ -58,10 +60,5 @@ public class FlowBehavior : MonoBehaviour {
     public void Overflow()
     {
         overflow = true;
-    }
-
-    public void Widen()
-    {
-        widen = true;
     }
 }
