@@ -9,7 +9,7 @@ public static class CustomEditorShortcuts
 		Undo.PerformRedo();
 	}
 
-	[MenuItem("Edit/Show|Hide All 2D Colliders _c")]
+	[MenuItem("Edit/Show|Hide All 2D Colliders &c")]
 	static void ShowHideAll2DColliders()
 	{
 		Physics2D.alwaysShowColliders = !Physics2D.alwaysShowColliders;

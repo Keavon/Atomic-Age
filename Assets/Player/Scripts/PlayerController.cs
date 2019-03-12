@@ -4,14 +4,14 @@ using System.Linq;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
+	public GameObject liquidPrefab;
+	public MopState mopState = MopState.NoMop;
 	public float accelerationToTargetSpeed = 25.0f;
 	public float walkSpeed = 10.0f;
 	public float airStrafeSpeed = 3.0f;
 	public float dragSpeed = 1.0f;
 	public float climbSpeed = 1.0f;
 	public float jumpVelocity = 7.5f;
-
-	public GameObject liquidPrefab;
 
 	List<GameObject> touchingGrounds = new List<GameObject>();
 	List<GameObject> touchingDraggablesDisqualified = new List<GameObject>();
@@ -26,7 +26,6 @@ public class PlayerController : MonoBehaviour {
 	GameObject currentMoppingTarget;
 	Animator stateMachine;
 	AnimationCycleController animationController;
-	Fluid currentMoppingLiquid = Fluid.None;
 	GameObject playerVisuals;
 
 	void Start() {
@@ -34,9 +33,11 @@ public class PlayerController : MonoBehaviour {
 		stateMachine = GetComponent<Animator>();
 
 		playerVisuals = new GameObject("Player [VISUALS]");
+		playerVisuals.SetActive(false);
 		playerVisuals.AddComponent<AnimationAssignments>();
 		animationController = playerVisuals.AddComponent<AnimationCycleController>();
 		animationController.playerGameObject = gameObject;
+		playerVisuals.SetActive(true);
 		GetComponent<AnimationAssignments>().CopyValueAssignmentsToAnotherObject(playerVisuals);
 	}
 
@@ -119,9 +120,14 @@ public class PlayerController : MonoBehaviour {
 		if (touchingGrounds.Any((ground) => ground.layer == 0)) {
 
 			// We have a liquid we can place.
-			if (currentMoppingLiquid != Fluid.None) {
-				PlaceLiquid(transform.position, currentMoppingLiquid);
-				currentMoppingLiquid = Fluid.None;
+			if (mopState != MopState.CleanMop && mopState != MopState.NoMop) {
+				Fluid fluidToPlace;
+				if (mopState == MopState.OilMop) fluidToPlace = Fluid.Oil;
+				else if (mopState == MopState.GlueMop) fluidToPlace = Fluid.Glue;
+				else fluidToPlace = Fluid.Ferro;
+
+				PlaceLiquid(transform.position, fluidToPlace);
+				mopState = MopState.CleanMop;
 			}
 			// We don't have a liquid, so lets see if we can pick any up
 			else {
@@ -384,15 +390,10 @@ public class PlayerController : MonoBehaviour {
 		if (hit.collider != null) {
 			LiquidBehavior liquidBehavior = hit.collider.GetComponent<LiquidBehavior>();
 
-			if (hit.collider.CompareTag("Oil")) {
-				currentMoppingLiquid = Fluid.Oil;
-			} else if (hit.collider.CompareTag("Glue")) {
-				currentMoppingLiquid = Fluid.Glue;
-			} else if (hit.collider.CompareTag("Ferrofluid")) {
-				currentMoppingLiquid = Fluid.Ferro;
-			} else {
-
-			}
+			if (hit.collider.CompareTag("Oil")) mopState = MopState.OilMop;
+			else if (hit.collider.CompareTag("Glue")) mopState = MopState.GlueMop;
+			else if (hit.collider.CompareTag("Ferrofluid")) mopState = MopState.FerrofluidMop;
+			
 			if (liquidBehavior) {
 				liquidBehavior.RemoveLiquid();
 			} else {
@@ -401,5 +402,4 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 	}
-
 }

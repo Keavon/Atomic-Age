@@ -6,15 +6,17 @@ using UnityEditor.Animations;
 public class AnimationCycleController : MonoBehaviour {
 	public GameObject playerGameObject;
 
+	PlayerController playerController;
 	AnimationAssignments animationAssignments;
 	PlayerAnimationCycle activeCycle = PlayerAnimationCycle.Standing;
 	GameObject animationChild;
 	Animator animator;
 	bool facingRight = true;
-	PlayerMopState mopState = PlayerMopState.NoMop;
+	MopState lastMopState = MopState.NoMop;
 
 	public void Awake() {
 		animationAssignments = GetComponent<AnimationAssignments>();
+		playerController = playerGameObject.GetComponent<PlayerController>();
 
 		animationChild = new GameObject("Animation Cycle");
 		animationChild.transform.SetParent(transform);
@@ -24,6 +26,10 @@ public class AnimationCycleController : MonoBehaviour {
 
 	public void Update() {
 		transform.position = playerGameObject.transform.position;
+		if (lastMopState != playerController.mopState) {
+			lastMopState = playerController.mopState;
+			ChangeToAnimation();
+		}
 	}
 
 	public void SetFacingLeft() {
@@ -44,30 +50,42 @@ public class AnimationCycleController : MonoBehaviour {
 
 	public void SetActiveCycle(PlayerAnimationCycle cycle) {
 		activeCycle = cycle;
-		switch (cycle) {
-			case PlayerAnimationCycle.Standing: ChangeToAnimation(animationAssignments.standing); break;
-			case PlayerAnimationCycle.Walking: ChangeToAnimation(animationAssignments.walking); break;
-			case PlayerAnimationCycle.Falling: ChangeToAnimation(animationAssignments.falling); break;
-			case PlayerAnimationCycle.Mopping: ChangeToAnimation(animationAssignments.mopping); break;
-			case PlayerAnimationCycle.Dragging: ChangeToAnimation(animationAssignments.dragging); break;
-			case PlayerAnimationCycle.Climbing: ChangeToAnimation(animationAssignments.climbing); break;
-			case PlayerAnimationCycle.GrabbingButton: ChangeToAnimation(animationAssignments.grabbingButton); break;
-			case PlayerAnimationCycle.GrabbingLever: ChangeToAnimation(animationAssignments.grabbingLever); break;
-		}
+		ChangeToAnimation();
 	}
 
-	void ChangeToAnimation(AnimationAssignments.AnimationCycle cycle) {
-		AnimatorController controller = animationAssignments.standing.noMop;
-		Vector2 alignment = cycle.alignment;
+	void ChangeToAnimation() {
+		AnimationAssignments.AnimationCycle currentAssignment = animationAssignments.standing;
+		if (activeCycle == PlayerAnimationCycle.Standing) currentAssignment = animationAssignments.standing;
+		else if (activeCycle == PlayerAnimationCycle.Walking) currentAssignment = animationAssignments.walking;
+		else if (activeCycle == PlayerAnimationCycle.Falling) currentAssignment = animationAssignments.falling;
+		else if (activeCycle == PlayerAnimationCycle.Mopping) currentAssignment = animationAssignments.mopping;
+		else if (activeCycle == PlayerAnimationCycle.Dragging) currentAssignment = animationAssignments.dragging;
+		else if (activeCycle == PlayerAnimationCycle.Climbing) currentAssignment = animationAssignments.climbing;
+		else if (activeCycle == PlayerAnimationCycle.GrabbingButton) currentAssignment = animationAssignments.grabbingButton;
+		else if (activeCycle == PlayerAnimationCycle.GrabbingLever) currentAssignment = animationAssignments.grabbingLever;
 
-		switch (mopState) {
-			case PlayerMopState.NoMop: controller = cycle.noMop != null ? cycle.noMop : animationAssignments.standing.noMop; break;
-			case PlayerMopState.CleanMop: controller = cycle.cleanMop != null ? cycle.cleanMop : animationAssignments.standing.cleanMop; break;
-			case PlayerMopState.OilMop: controller = cycle.oilMop != null ? cycle.oilMop : animationAssignments.standing.oilMop; break;
-			case PlayerMopState.GlueMop: controller = cycle.glueMop != null ? cycle.glueMop : animationAssignments.standing.glueMop; break;
-			case PlayerMopState.FerrofluidMop: controller = cycle.ferrofluidMop != null ? cycle.ferrofluidMop : animationAssignments.standing.ferrofluidMop; break;
+		AnimatorController currentController = currentAssignment.noMop;
+		if (playerController.mopState == MopState.NoMop) currentController = currentAssignment.noMop;
+		if (playerController.mopState == MopState.CleanMop) currentController = currentAssignment.cleanMop;
+		if (playerController.mopState == MopState.OilMop) currentController = currentAssignment.oilMop;
+		if (playerController.mopState == MopState.GlueMop) currentController = currentAssignment.glueMop;
+		if (playerController.mopState == MopState.FerrofluidMop) currentController = currentAssignment.ferrofluidMop;
+
+		Vector2 currentAlignment = currentAssignment.alignment;
+
+		// Fallbacks
+		if (currentController == null) {
+			currentController = currentAssignment.noMop;
 		}
-		animator.runtimeAnimatorController = controller as RuntimeAnimatorController;
-		animationChild.transform.localPosition = cycle.alignment;
+		if (currentController == null) {
+			currentController = animationAssignments.standing.noMop;
+			currentAlignment = animationAssignments.standing.alignment;
+		}
+		if (currentController == null) {
+			Debug.Log("No animation cycle assigned to the player.");
+		}
+		
+		animator.runtimeAnimatorController = currentController as RuntimeAnimatorController;
+		animationChild.transform.localPosition = currentAlignment;
 	}
 }

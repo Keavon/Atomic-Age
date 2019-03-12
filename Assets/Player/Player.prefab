@@ -103,7 +103,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.910047}
+  m_Offset: {x: 0, y: 0.860047}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -114,7 +114,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.65, y: 1.6}
+  m_Size: {x: 0.65, y: 1.5}
   m_EdgeRadius: 0.1
 --- !u!61 &61734125728919148
 BoxCollider2D:
@@ -172,7 +172,7 @@ MonoBehaviour:
   standing:
     alignment: {x: -0.024, y: 0.8}
     noMop: {fileID: 9100000, guid: 7e84738f7b9171a4a966c3de901f8f66, type: 2}
-    cleanMop: {fileID: 0}
+    cleanMop: {fileID: 9100000, guid: 8177d840095ee6c49afe1ccc4eabde2f, type: 2}
     oilMop: {fileID: 0}
     glueMop: {fileID: 0}
     ferrofluidMop: {fileID: 0}
@@ -236,11 +236,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00a809aec7a8dbf4b93d0e7e22f65a4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  liquidPrefab: {fileID: 1031611667731240, guid: 26d728cbe88b7684084dfeea35b80f6d,
+    type: 2}
+  mopState: 0
   accelerationToTargetSpeed: 20
   walkSpeed: 4
   airStrafeSpeed: 4
   dragSpeed: 1
   climbSpeed: 2
   jumpVelocity: 7.5
-  liquidPrefab: {fileID: 1031611667731240, guid: 26d728cbe88b7684084dfeea35b80f6d,
-    type: 2}

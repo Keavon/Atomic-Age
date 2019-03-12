@@ -1,4 +1,4 @@
-public enum PlayerMopState {
+public enum MopState {
 	NoMop,
 	CleanMop,
 	OilMop,
