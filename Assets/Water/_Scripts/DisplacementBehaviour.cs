@@ -10,56 +10,48 @@ using UnityEngine;
 // tune the timing right
 // edit script and shader to remove lines that aren't used 
 // rename variables, customize to code style
-public class DisplacementBehaviour : MonoBehaviour 
-{
-    public Material _mat;
-    private RenderTexture _screenTex;
-    private RenderTexture _waterMaskTex;
+public class DisplacementBehaviour : MonoBehaviour {
+	public Material ppeMaterial;
+	public Texture displacementTexture;
+	public float movementSpeed = 5f;
+	public Color waterColor = Color.white;
 
-    public Texture _displacementTex;
-    public float _movement = 5f;
-    public Color _waterColor = Color.white;
+	RenderTexture mainRenderTexture;
+	RenderTexture maskWaterTexture;
+	GameObject ppeRenderCamera;
+	Camera ppeRenderCameraComponent;
+	Camera thisCameraComponent;
 
-    private GameObject _postRenderCamObj;
-    private Camera _postRenderCam;
-    private Camera _screenCam;
+	void Awake() {
+		mainRenderTexture = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.Default);
+		maskWaterTexture = new RenderTexture(Screen.width / 4, Screen.height / 4, 24, RenderTextureFormat.Default);
+		maskWaterTexture.wrapMode = TextureWrapMode.Repeat;
 
-    void Awake() 
-    {
-        _screenTex = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.Default);
-        _waterMaskTex = new RenderTexture(Screen.width / 4, Screen.height / 4, 24, RenderTextureFormat.Default);
-        _waterMaskTex.wrapMode = TextureWrapMode.Repeat;
-
-        _screenCam = GetComponent<Camera>();
-        _screenCam.SetTargetBuffers(_screenTex.colorBuffer, _screenTex.depthBuffer);
-        CreatePostRenderCam();
-
-        var shader = Shader.Find("Unlit/DisplacementShader");
-        _mat = new Material(shader);
-    }
-
-    void OnPostRender()
-	{
-        _postRenderCam.CopyFrom(_screenCam);
-        _postRenderCam.clearFlags = CameraClearFlags.SolidColor;
-        _postRenderCam.backgroundColor = Color.black;
-        _postRenderCam.cullingMask = 1 << LayerMask.NameToLayer("Water");
-        _postRenderCam.targetTexture = _waterMaskTex;
-        _postRenderCam.Render();
-
-        _mat.SetTexture("_MaskTex", _waterMaskTex);
-        _mat.SetTexture("_DisplacementTex", _displacementTex);
-        _mat.SetFloat("_Movement", _movement);
-        _mat.SetColor("_WaterColor", _waterColor);
-        Graphics.Blit(_screenTex, null, _mat);
+		thisCameraComponent = GetComponent<Camera>();
+		thisCameraComponent.SetTargetBuffers(mainRenderTexture.colorBuffer, mainRenderTexture.depthBuffer);
+		CreatePostRenderCam();
 	}
 
-    private void CreatePostRenderCam() 
-    {
-        _postRenderCamObj = new GameObject("PostRenderCam");
-        _postRenderCamObj.transform.position = transform.position;
-        _postRenderCamObj.transform.rotation = transform.rotation;
-        _postRenderCam = _postRenderCamObj.AddComponent<Camera>();
-        _postRenderCam.enabled = false;
-    }
+	void OnPostRender() {
+		ppeRenderCameraComponent.CopyFrom(thisCameraComponent);
+		ppeRenderCameraComponent.clearFlags = CameraClearFlags.SolidColor;
+		ppeRenderCameraComponent.backgroundColor = Color.black;
+		ppeRenderCameraComponent.cullingMask = 1 << LayerMask.NameToLayer("Water");
+		ppeRenderCameraComponent.targetTexture = maskWaterTexture;
+		ppeRenderCameraComponent.Render();
+
+		ppeMaterial.SetTexture("_MaskTex", maskWaterTexture);
+		ppeMaterial.SetTexture("_DisplacementTex", displacementTexture);
+		ppeMaterial.SetFloat("_Movement", movementSpeed);
+		ppeMaterial.SetColor("_WaterColor", waterColor);
+		Graphics.Blit(mainRenderTexture, null, ppeMaterial);
+	}
+
+	private void CreatePostRenderCam() {
+		ppeRenderCamera = new GameObject("PostRenderCam");
+		ppeRenderCamera.transform.position = transform.position;
+		ppeRenderCamera.transform.rotation = transform.rotation;
+		ppeRenderCameraComponent = ppeRenderCamera.AddComponent<Camera>();
+		ppeRenderCameraComponent.enabled = false;
+	}
 }

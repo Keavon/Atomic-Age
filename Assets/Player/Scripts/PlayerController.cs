@@ -27,11 +27,17 @@ public class PlayerController : MonoBehaviour {
 	Animator stateMachine;
 	AnimationCycleController animationController;
 	Fluid currentMoppingLiquid = Fluid.None;
+	GameObject playerVisuals;
 
 	void Start() {
 		playerRigidbody = GetComponent<Rigidbody2D>();
 		stateMachine = GetComponent<Animator>();
-		animationController = GetComponent<AnimationCycleController>();
+
+		playerVisuals = new GameObject("Player [VISUALS]");
+		playerVisuals.AddComponent<AnimationAssignments>();
+		animationController = playerVisuals.AddComponent<AnimationCycleController>();
+		animationController.playerGameObject = gameObject;
+		GetComponent<AnimationAssignments>().CopyValueAssignmentsToAnotherObject(playerVisuals);
 	}
 
 	void Update() {

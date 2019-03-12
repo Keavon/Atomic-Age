@@ -1,26 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor.Animations;
 
 public class AnimationCycleController : MonoBehaviour {
-	public GameObject standing;
-	public GameObject walking;
-	public GameObject falling;
-	public GameObject mopping;
-	public GameObject dragging;
-	public GameObject climbing;
-	public GameObject grabbingButton;
-	public GameObject grabbingLever;
+	public GameObject playerGameObject;
 
+	AnimationAssignments animationAssignments;
 	PlayerAnimationCycle activeCycle = PlayerAnimationCycle.Standing;
+	GameObject animationChild;
+	Animator animator;
 	bool facingRight = true;
+	PlayerMopState mopState = PlayerMopState.NoMop;
 
-	public void SetActiveCycle(PlayerAnimationCycle cycle) {
-		if (activeCycle != cycle) {
-			SetCycleState(activeCycle, false);
-			activeCycle = cycle;
-			SetCycleState(activeCycle, true);
-		}
+	public void Awake() {
+		animationAssignments = GetComponent<AnimationAssignments>();
+
+		animationChild = new GameObject("Animation Cycle");
+		animationChild.transform.SetParent(transform);
+		animationChild.AddComponent<SpriteRenderer>();
+		animator = animationChild.AddComponent<Animator>();
+	}
+
+	public void Update() {
+		transform.position = playerGameObject.transform.position;
 	}
 
 	public void SetFacingLeft() {
@@ -39,16 +42,32 @@ public class AnimationCycleController : MonoBehaviour {
 		transform.localScale = scale;
 	}
 
-	void SetCycleState(PlayerAnimationCycle cycle, bool state) {
+	public void SetActiveCycle(PlayerAnimationCycle cycle) {
+		activeCycle = cycle;
 		switch (cycle) {
-			case PlayerAnimationCycle.Standing: standing.SetActive(state); break;
-			case PlayerAnimationCycle.Walking: walking.SetActive(state); break;
-			case PlayerAnimationCycle.Falling: falling.SetActive(state); break;
-			case PlayerAnimationCycle.Mopping: mopping.SetActive(state); break;
-			case PlayerAnimationCycle.Dragging: dragging.SetActive(state); break;
-			case PlayerAnimationCycle.Climbing: climbing.SetActive(state); break;
-			case PlayerAnimationCycle.GrabbingButton: grabbingButton.SetActive(state); break;
-			case PlayerAnimationCycle.GrabbingLever: grabbingLever.SetActive(state); break;
+			case PlayerAnimationCycle.Standing: ChangeToAnimation(animationAssignments.standing); break;
+			case PlayerAnimationCycle.Walking: ChangeToAnimation(animationAssignments.walking); break;
+			case PlayerAnimationCycle.Falling: ChangeToAnimation(animationAssignments.falling); break;
+			case PlayerAnimationCycle.Mopping: ChangeToAnimation(animationAssignments.mopping); break;
+			case PlayerAnimationCycle.Dragging: ChangeToAnimation(animationAssignments.dragging); break;
+			case PlayerAnimationCycle.Climbing: ChangeToAnimation(animationAssignments.climbing); break;
+			case PlayerAnimationCycle.GrabbingButton: ChangeToAnimation(animationAssignments.grabbingButton); break;
+			case PlayerAnimationCycle.GrabbingLever: ChangeToAnimation(animationAssignments.grabbingLever); break;
 		}
+	}
+
+	void ChangeToAnimation(AnimationAssignments.AnimationCycle cycle) {
+		AnimatorController controller = animationAssignments.standing.noMop;
+		Vector2 alignment = cycle.alignment;
+
+		switch (mopState) {
+			case PlayerMopState.NoMop: controller = cycle.noMop != null ? cycle.noMop : animationAssignments.standing.noMop; break;
+			case PlayerMopState.CleanMop: controller = cycle.cleanMop != null ? cycle.cleanMop : animationAssignments.standing.cleanMop; break;
+			case PlayerMopState.OilMop: controller = cycle.oilMop != null ? cycle.oilMop : animationAssignments.standing.oilMop; break;
+			case PlayerMopState.GlueMop: controller = cycle.glueMop != null ? cycle.glueMop : animationAssignments.standing.glueMop; break;
+			case PlayerMopState.FerrofluidMop: controller = cycle.ferrofluidMop != null ? cycle.ferrofluidMop : animationAssignments.standing.ferrofluidMop; break;
+		}
+		animator.runtimeAnimatorController = controller as RuntimeAnimatorController;
+		animationChild.transform.localPosition = cycle.alignment;
 	}
 }
