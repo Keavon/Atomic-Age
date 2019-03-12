@@ -28,7 +28,7 @@ public class WaypointMoveController : MonoBehaviour, IActionable {
 
 		rb = GetComponent<Rigidbody2D>();
 		waypointGroup = new Vector2[waypoints.Length + 1];
-		waypointGroup[0] = transform.localPosition;
+		waypointGroup[0] = rb.position;
 		System.Array.Copy(waypoints, 0, waypointGroup, 1, waypoints.Length);
 		playing = true;
 	}
