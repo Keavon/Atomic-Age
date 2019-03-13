@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour {
 
 		Vector3 cameraPosition = transform.position;
 		cameraPosition.x = playerPosition.x;
-		cameraPosition.y = playerPosition.y;
+		cameraPosition.y = playerPosition.y + 2;
 		transform.position = cameraPosition;
 	}
 }
