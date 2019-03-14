@@ -13,7 +13,6 @@ public class FallingBoxBehavior : MonoBehaviour {
     void Start()
     {
         actionable = fallLadder.GetComponent(actionableScript) as IActionable;
-        Debug.Log(actionable);
     }
 
     void OnTriggerEnter2D(Collider2D collision)

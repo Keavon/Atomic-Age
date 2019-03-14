@@ -67,16 +67,16 @@ public class LiquidBehavior : MonoBehaviour
 
         FillVerticesArray(position, left, right);
 
-        // Set furthest points left and right
-        leftLocation = verts[0];
-        rightLocation = verts[leftDistance + rightDistance - 2];
-
         // No vertices could be placed, we're done
-        if (verts.Length == 0)
+        if (verts == null || verts.Length == 0)
         {
             Destroy(gameObject);
             return;
         }
+
+        // Set furthest points left and right
+        leftLocation = verts[0];
+        rightLocation = verts[leftDistance + rightDistance - 2];
 
         FixLedges();
         AddMeshDepth();
@@ -199,6 +199,11 @@ public class LiquidBehavior : MonoBehaviour
 
             if (!stoppedLeft) stoppedLeft = !FindTopography(leftVerticesTop, leftVerticesBottom, position, xPosLeft);
             else overflowAmount++;
+        }
+
+        if (leftVerticesTop.Count() == 0 || rightVerticesTop.Count == 0)
+        {
+            return;
         }
 
         float maxLeftX = leftVerticesTop.Last().x;
