@@ -1,3 +1,7 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 Shader "Unlit/DisplacementShader"
 {
 	Properties
@@ -8,6 +12,7 @@ Shader "Unlit/DisplacementShader"
 		_Movement ("Movement", float) = 1
 		_WaterColor ("WaterCol", Color) = (0,0,0,0)
 	}
+	
 	SubShader
 	{
 		Tags { "RenderType"="Opaque" }
@@ -16,13 +21,8 @@ Shader "Unlit/DisplacementShader"
 		Pass
 		{
 			CGPROGRAM
-// Upgrade NOTE: excluded shader from DX11; has structs without semantics (struct v2f members worldVertex)
-#pragma exclude_renderers d3d11
 			#pragma vertex vert
 			#pragma fragment frag
-			// make fog work
-			#pragma multi_compile_fog
-			
 			#include "UnityCG.cginc"
 
 			struct appdata
@@ -34,7 +34,6 @@ Shader "Unlit/DisplacementShader"
 			struct v2f
 			{
 				float2 uv : TEXCOORD0;
-				UNITY_FOG_COORDS(1)
 				float4 vertex : SV_POSITION;
 				float2 worldVertex : TEXCOORD1;
 			};
@@ -51,10 +50,8 @@ Shader "Unlit/DisplacementShader"
 			{
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.worldVertex = v.vertex.xy;
+				o.worldVertex = mul (unity_ObjectToWorld, v.vertex).xy;
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-
-				UNITY_TRANSFER_FOG(o, o.vertex);
 				return o;
 			}
 			
@@ -62,7 +59,7 @@ Shader "Unlit/DisplacementShader"
 			{
 				fixed mask = tex2D(_MaskTex, i.uv).r;
 
-				fixed2 dPos = i.uv;
+				fixed2 dPos = i.uv.xy;
 				dPos.x += (_Time[0]/10) % 2;
 				dPos.y += (_Time[0]/10) % 2;
 				fixed4 disp = tex2D(_DisplacementTex, dPos);

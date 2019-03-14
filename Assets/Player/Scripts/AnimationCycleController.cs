@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.Animations;
@@ -51,6 +52,7 @@ public class AnimationCycleController : MonoBehaviour {
 	public void SetActiveCycle(PlayerAnimationCycle cycle) {
 		activeCycle = cycle;
 		ChangeToAnimation();
+		SetPlaybackSpeed(1);
 	}
 
 	void ChangeToAnimation() {
@@ -87,5 +89,14 @@ public class AnimationCycleController : MonoBehaviour {
 		
 		animator.runtimeAnimatorController = currentController as RuntimeAnimatorController;
 		animationChild.transform.localPosition = currentAlignment;
+	}
+
+	public void SetPlaybackSpeed(float speed) {
+		// Checking if it's 1 is sort of a hack, it would be better to check if "mirror" exists
+		if (animator.parameterCount == 1) {
+			if (speed < 0) animator.SetBool("mirror", true);
+			if (speed > 0) animator.SetBool("mirror", false);
+			animator.speed = Mathf.Abs(speed);
+		}
 	}
 }

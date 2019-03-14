@@ -6,7 +6,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 	public GameObject liquidPrefab;
 	public MopState mopState = MopState.NoMop;
-	public float accelerationToTargetSpeed = 25.0f;
 	public float walkSpeed = 10.0f;
 	public float airStrafeSpeed = 3.0f;
 	public float dragSpeed = 1.0f;
@@ -27,6 +26,11 @@ public class PlayerController : MonoBehaviour {
 	Animator stateMachine;
 	AnimationCycleController animationController;
 	GameObject playerVisuals;
+	Vector2 deltaV;
+	Rigidbody2D rigidbodySupportingPlayer;
+	Vector2 inputMotion;
+	float moppingTime = 0f;
+	bool climbingTemporarilyProhibited = false;
 
 	void Start() {
 		playerRigidbody = GetComponent<Rigidbody2D>();
@@ -42,9 +46,12 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Update() {
+		// Save the latest input direction motion
+		inputMotion = InputManager.motion();
+
 		// Set input states for player
-		stateMachine.SetFloat("Input_XMotion", InputManager.motion().x);
-		stateMachine.SetFloat("Input_YMotion", InputManager.motion().y);
+		stateMachine.SetFloat("Input_XMotion", inputMotion.x);
+		stateMachine.SetFloat("Input_YMotion", inputMotion.y);
 		stateMachine.SetBool("Input_JumpPress", InputManager.jumpPress());
 		stateMachine.SetBool("Input_JumpRelease", InputManager.jumpRelease());
 		stateMachine.SetBool("Input_InteractPress", InputManager.interactPress());
@@ -64,63 +71,73 @@ public class PlayerController : MonoBehaviour {
 		stateMachine.SetBool("Touching_Ground", touchingGrounds.Count > 0);
 		stateMachine.SetBool("Touching_Climbable", touchingClimbables.Count > 0);
 		stateMachine.SetBool("Touching_Grabbable", touchingGrabbables.Count > 0);
-		int total = GetEligibleDraggables().Count;
-		stateMachine.SetBool("Touching_Draggable", total > 0);
-
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Mopping")) PerformMopping();
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Climbing")) PerformClimbing();
-		if (stateMachine.GetBool("Input_MopPress")) StartMopping();
+		stateMachine.SetBool("Touching_Draggable", GetEligibleDraggables().Count > 0);
 	}
 
 	void FixedUpdate() {
+		stateMachine.Update(Time.fixedDeltaTime);
+		// Reset the change in player velocity sum
+		deltaV = Vector2.zero;
+
+		// Reenable gravity in case it was disabled for climbing
+		playerRigidbody.gravityScale = 1;
+
 		// Perform the functionality of the active player state
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Walking")) PerformWalking();
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Falling")) PerformFalling();
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Grabbing")) PerformGrabbing();
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Dragging")) PerformDragging();
+		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Climbing") && !climbingTemporarilyProhibited) PerformClimbing();
+		else if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Walking")) PerformWalking();
+		else if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Falling")) PerformFalling();
+		else if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Grabbing")) PerformGrabbing();
+		else if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Dragging")) PerformDragging();
+		else if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Mopping")) PerformMopping();
+		else if (!climbingTemporarilyProhibited) { deltaV = new Vector2(-playerRigidbody.velocity.x, 0); Debug.Log("END OF CHAIN"); }
+
+		// Apply the change in player velocity as an impulse (force * deltaT = impulse = mass * deltaV)
+		playerRigidbody.AddForce(deltaV * playerRigidbody.mass, ForceMode2D.Impulse);
 	}
 
-	void PushPlayerAtSpeedHorizontally(float speed, float acceleration) {
-		float difference = speed - playerRigidbody.velocity.x;
-		float momentaryForce = difference * acceleration;
-		Vector2 movementForce = new Vector2(momentaryForce, 0);
-		playerRigidbody.AddForce(movementForce);
+	void PerformWalking() {
+		Debug.Log("Walking");
+		// Ensure there is no active interaction target
+		activeInteractionTarget = null;
+
+		// Jump
+		if (stateMachine.GetBool("Input_JumpPressWait")) {
+			Debug.Log("WALKING : JUMP");
+			JumpMotion();
+		}
+
+		// Horizontal walk movement
+		if (inputMotion.x <= -0.5 || inputMotion.x >= 0.5) {
+			WalkMotion();
+
+			animationController.SetActiveCycle(PlayerAnimationCycle.Walking);
+			if (inputMotion.x > 0) animationController.SetFacingRight();
+			else animationController.SetFacingLeft();
+		}
+		else {
+			animationController.SetActiveCycle(PlayerAnimationCycle.Standing);
+		}
 	}
 
-	void PushPlayerAtSpeedVertically(float speed, float acceleration) {
-		float difference = speed - playerRigidbody.velocity.y;
-		float momentaryForce = difference * acceleration;
-		Vector2 movementForce = new Vector2(0, momentaryForce);
-		playerRigidbody.AddForce(movementForce);
+	void PerformFalling() {
+		Debug.Log("Falling");
+		// Horizontal air strafe movement
+		FallMotion();
+
+		animationController.SetActiveCycle(PlayerAnimationCycle.Falling);
+		if (inputMotion.x >= 0.1) animationController.SetFacingRight();
+		else if (inputMotion.x <= -0.1) animationController.SetFacingLeft();
 	}
 
-	void PushPlayerAtSpeed(float xSpeed, float ySpeed, float acceleration) {
-		PushPlayerAtSpeedHorizontally(xSpeed, acceleration);
-		PushPlayerAtSpeedVertically(ySpeed, acceleration);
-	}
+	void PerformMopping() {
+		if (moppingTime == 0) {
+			animationController.SetActiveCycle(PlayerAnimationCycle.Mopping);
+			
+			bool playerTouchingMoppableSurface = touchingGrounds.Any(ground => ground.layer == 0);
+			bool playerHasLiquidOnMop = mopState != MopState.CleanMop && mopState != MopState.NoMop;
 
-	void PushPlayerToPlaceHorizontally(float xCoordinate, float speed, float acceleration) {
-		float difference = xCoordinate - transform.position.x;
-		float pushSpeed = difference * speed;
-		PushPlayerAtSpeedHorizontally(pushSpeed, acceleration);
-	}
-
-	void PushPlayerToPlaceVertically(float yCoordinate, float speed, float acceleration) {
-		float difference = yCoordinate - transform.position.y;
-		float pushSpeed = difference * speed;
-		PushPlayerAtSpeedVertically(pushSpeed, acceleration);
-	}
-
-	void PushPlayerToPlace(float xCoordinate, float yCoordinate, float speed, float acceleration) {
-		PushPlayerToPlaceHorizontally(xCoordinate, speed, acceleration);
-		PushPlayerToPlaceVertically(yCoordinate, speed, acceleration);
-	}
-
-	void StartMopping() {
-		if (touchingGrounds.Any((ground) => ground.layer == 0)) {
-
-			// We have a liquid we can place.
-			if (mopState != MopState.CleanMop && mopState != MopState.NoMop) {
+			// Check if we have a liquid we can place
+			if (playerTouchingMoppableSurface && playerHasLiquidOnMop) {
 				Fluid fluidToPlace;
 				if (mopState == MopState.OilMop) fluidToPlace = Fluid.Oil;
 				else if (mopState == MopState.GlueMop) fluidToPlace = Fluid.Glue;
@@ -129,133 +146,55 @@ public class PlayerController : MonoBehaviour {
 				PlaceLiquid(transform.position, fluidToPlace);
 				mopState = MopState.CleanMop;
 			}
-			// We don't have a liquid, so lets see if we can pick any up
+			// If we don't have a liquid, let's see if we can pick any up
 			else {
 				CheckPickupLiquid(transform.position);
 			}
-		} else {
-			CheckPickupLiquid(transform.position);
-		}
-	}
-
-	void PerformWalking() {
-		Vector2 motion = InputManager.motion();
-
-		// Ensure there is no active interaction target
-		activeInteractionTarget = null;
-
-		// Ensure gravity acts upon player
-		playerRigidbody.gravityScale = 1;
-
-		SelectClimbTarget();
-		bool tryingToClimbNotJump = activeClimbTarget != null && motion.y > 0.5f;
-
-		// Jump
-		if (!tryingToClimbNotJump && stateMachine.GetBool("Input_JumpPressWait")) {
-			stateMachine.ResetTrigger("Input_JumpPressWait");
-
-			Vector2 velocity = playerRigidbody.velocity;
-			velocity.y = jumpVelocity;
-			playerRigidbody.velocity = velocity;
 		}
 
-		// Horizontal walk movement
-		if (motion.x <= -0.5 || motion.x >= 0.5) {
-			float targetSpeed = walkSpeed * motion.x;
-			PushPlayerAtSpeedHorizontally(targetSpeed, accelerationToTargetSpeed);
+		moppingTime += Time.fixedDeltaTime;
 
-			animationController.SetActiveCycle(PlayerAnimationCycle.Walking);
-			if (motion.x > 0) animationController.SetFacingRight();
-			else animationController.SetFacingLeft();
-		} else {
-			animationController.SetActiveCycle(PlayerAnimationCycle.Standing);
-		}
-	}
-
-	void PerformFalling() {
-		Vector2 motion = InputManager.motion();
-
-		// Ensure gravity acts upon player
-		playerRigidbody.gravityScale = 1;
-
-		// Horizontal air strafe movement
-		float targetSpeed = airStrafeSpeed * InputManager.motion().x;
-		PushPlayerAtSpeedHorizontally(targetSpeed, accelerationToTargetSpeed);
-
-		animationController.SetActiveCycle(PlayerAnimationCycle.Falling);
-		if (motion.x >= 0.1) animationController.SetFacingRight();
-		else if (motion.x <= -0.1) animationController.SetFacingLeft();
-	}
-
-	void PerformMopping() {
-		Vector3 moppingLocation = transform.position;
-
-		// Read player motion input
-		Vector2 motion = InputManager.motion();
-
-		// Read player velocity
-		Vector2 velocity = playerRigidbody.velocity;
-		velocity.x = motion.x * walkSpeed;
-
-		// Write player velocity
-		playerRigidbody.velocity = velocity;
-
-		animationController.SetActiveCycle(PlayerAnimationCycle.Mopping);
+		if (moppingTime > 1) stateMachine.SetBool("Trigger_BreakMopping", true);
 	}
 
 	void PerformClimbing() {
-		if (stateMachine.GetBool("Input_JumpPress")) {
-			activeClimbTarget = null;
-			stateMachine.SetBool("Trigger_BreakClimbing", true);
+		Debug.Log("Climbing");
+
+		// Jump off ladder
+		if (stateMachine.GetBool("Input_JumpPressWait")) {
+			Debug.Log("CLIMBING : JUMP");
+			climbingTemporarilyProhibited = true;
+			Debug.Log("CLIMBING : SET climbingTemporarilyProhibited TRUE");
+			JumpMotion();
 			return;
 		}
 
-		// Ensure there is a climb target
-		SelectClimbTarget();
-		if (activeClimbTarget == null) return;
-
-		// Stop gravity acting on player
+		// Disable gravity
 		playerRigidbody.gravityScale = 0;
 
-		// Read player motion input
-		Vector2 motion = InputManager.motion();
+		// Ensure there is a climb target
+		SelectClimbTarget();
+		if (!activeClimbTarget) return;
 
-		// Vertical climbing motion
-		Bounds climbableBounds = activeClimbTarget.GetComponent<Collider2D>().bounds;
-		float distanceAboveBottom = gameObject.transform.position.y - climbableBounds.min.y;
-		float distanceBelowTop = climbableBounds.max.y - gameObject.transform.position.y - 1.0f;
-
-		// Leaning and centering while not grounded
-		if (touchingGrounds.Count == 0) {
-			if (motion.x < -0.5) Debug.Log("Lean left");
-			else if (motion.x > 0.5) Debug.Log("Lean right");
-			PushPlayerToPlaceHorizontally(climbableBounds.center.x, 10, 20);
-		}
-
-		float targetSpeed = motion.y * climbSpeed;
-		if (targetSpeed < 0 && distanceAboveBottom > 0) {
-			PushPlayerAtSpeedVertically(targetSpeed, accelerationToTargetSpeed);
-		} else if (targetSpeed > 0 && distanceBelowTop > 0) {
-			PushPlayerAtSpeedVertically(targetSpeed, accelerationToTargetSpeed);
-		} else {
-			PushPlayerAtSpeedVertically(0, accelerationToTargetSpeed);
-		}
-
+		// Face direction
+		if (inputMotion.x < -0.5) animationController.SetFacingLeft();
+		else if (inputMotion.x > 0.5) animationController.SetFacingRight();
 		animationController.SetActiveCycle(PlayerAnimationCycle.Climbing);
+
+		// Allow walking near base of ladder
+		Bounds climbableBounds = activeClimbTarget.GetComponent<Collider2D>().bounds;
+
+		// Climb
+		float verticalVelocity = ClimbMotion(climbableBounds);
+		animationController.SetPlaybackSpeed(verticalVelocity);
 	}
 
 	void PerformGrabbing() {
 		// Ensure there is a drag target
 		SelectInteractionTarget();
 
-		// Halt player motion
-		playerRigidbody.velocity = Vector2.zero;
-
-		// Read player motion input
-		Vector2 motion = InputManager.motion();
-
 		// Redirect motion into grab target
-		SendForceToInteractionTarget(motion);
+		SendForceToInteractionTarget(inputMotion);
 
 		animationController.SetActiveCycle(PlayerAnimationCycle.GrabbingLever);
 	}
@@ -264,20 +203,57 @@ public class PlayerController : MonoBehaviour {
 		// Ensure there is a drag target
 		SelectInteractionTarget();
 
-		// Read player motion input
-		Vector2 motion = InputManager.motion();
-
-		// Read player velocity
-		Vector2 velocity = playerRigidbody.velocity;
-		velocity.x = motion.x * dragSpeed;
-
-		// Write player velocity
-		playerRigidbody.velocity = velocity;
-
 		// Redirect motion into drag target
-		SendMotionToInteractionTarget(velocity);
+		Vector2 draggingSpeed = new Vector2(playerRigidbody.velocity.x * dragSpeed, 0);
+		SendMotionToInteractionTarget(draggingSpeed);
 
+		// Update animation
 		animationController.SetActiveCycle(PlayerAnimationCycle.Dragging);
+	}
+
+	void WalkMotion() {
+		Vector2 targetVelocity = inputMotion * walkSpeed;
+		Vector2 relativeTargetVelocity = targetVelocity;
+		if (rigidbodySupportingPlayer) {
+			relativeTargetVelocity += rigidbodySupportingPlayer.velocity;
+		}
+
+		deltaV += new Vector2(relativeTargetVelocity.x, 0) - playerRigidbody.velocity;
+	}
+
+	void JumpMotion() {
+		stateMachine.ResetTrigger("Input_JumpPressWait");
+		deltaV += Vector2.up * jumpVelocity;
+
+		activeClimbTarget = null;
+		stateMachine.SetBool("Trigger_BreakClimbing", true);
+	}
+
+	void FallMotion() {
+		Vector2 targetVelocity = inputMotion * airStrafeSpeed;
+		deltaV.x += targetVelocity.x - playerRigidbody.velocity.x;
+	}
+
+	float ClimbMotion(Bounds climbableBounds) {
+		float thresholdHeight = 0.5f;
+
+		float distanceAboveBottom = playerRigidbody.position.y - climbableBounds.min.y;
+		float distanceBelowTop = climbableBounds.max.y - playerRigidbody.position.y - 1.75f;
+		float distanceOffCenter = climbableBounds.center.x - playerRigidbody.position.x;
+
+		Vector2 targetVelocity = new Vector2(distanceOffCenter * climbSpeed, inputMotion.y * climbSpeed);
+		if (distanceAboveBottom <= 0 && targetVelocity.y < 0) targetVelocity.y = 0;
+		if (distanceBelowTop <= 0 && targetVelocity.y > 0) targetVelocity.y = 0;
+
+		Vector2 climbDeltaV = targetVelocity - playerRigidbody.velocity;
+		if (distanceAboveBottom < thresholdHeight) {
+			WalkMotion();
+			climbDeltaV.x = deltaV.x;
+		}
+		
+		deltaV = climbDeltaV;
+
+		return targetVelocity.y;
 	}
 
 	void SendMotionToInteractionTarget(Vector2 motion) {
@@ -332,6 +308,9 @@ public class PlayerController : MonoBehaviour {
 				touchingDraggablesDisqualified.Add(other.gameObject);
 			}
 		}
+
+		Rigidbody2D rb = other.gameObject.GetComponentInParent<Rigidbody2D>();
+		if (rb) rigidbodySupportingPlayer = rb;
 	}
 
 	void OnTriggerExit2D(Collider2D other) {
@@ -342,6 +321,10 @@ public class PlayerController : MonoBehaviour {
 			if (touchingDraggablesDisqualified.Contains(other.gameObject)) {
 				touchingDraggablesDisqualified.Remove(other.gameObject);
 			}
+		}
+
+		if (rigidbodySupportingPlayer && other.gameObject == rigidbodySupportingPlayer.gameObject) {
+			rigidbodySupportingPlayer = null;
 		}
 	}
 
@@ -367,6 +350,7 @@ public class PlayerController : MonoBehaviour {
 
 	public void ExitedClimbable(GameObject climbable) {
 		if (touchingClimbables.Contains(climbable)) touchingClimbables.Remove(climbable);
+		climbingTemporarilyProhibited = false;
 	}
 
 	private void PlaceLiquid(Vector3 position, Fluid fluid) {
@@ -385,7 +369,6 @@ public class PlayerController : MonoBehaviour {
 
 		RaycastHit2D hit = Physics2D.BoxCast(origin, hitSize, 0, Vector2.down, distance, moppableLayer);
 
-
 		// We found some lqiuid, so set our mop liquid
 		if (hit.collider != null) {
 			LiquidBehavior liquidBehavior = hit.collider.GetComponent<LiquidBehavior>();
@@ -398,7 +381,6 @@ public class PlayerController : MonoBehaviour {
 				liquidBehavior.RemoveLiquid();
 			} else {
 				Destroy(hit.collider.gameObject);
-
 			}
 		}
 	}
