@@ -137,7 +137,7 @@ public class LiquidBehavior : MonoBehaviour
             gameObject.tag = "Ferrofluid";
             gameObject.GetComponent<Renderer>().material.color = ferroColor;
             liquidDrips = liquidDripsFerro;
-            left = right = 0.5f;
+            left = right = 0.7f;
         }
     }
 

@@ -19,6 +19,7 @@ public class FallingBoxBehavior : MonoBehaviour {
     {
         if (collision.Equals(fallArea)){
             actionable.Run();
+            Camera.main.GetComponent<CameraController>().ShakeCamera(1, 1);
         }
     }
 }

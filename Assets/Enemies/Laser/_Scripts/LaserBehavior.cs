@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LaserBehavior : MonoBehaviour {
 
@@ -29,6 +30,10 @@ public class LaserBehavior : MonoBehaviour {
         if (hit.collider != null)
         {
             lineRenderer.SetPosition(1, hit.point);
+            if (hit.collider.CompareTag("Player"))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
         }
         else
         {

@@ -19,7 +19,7 @@ public class FerroFluidBehavior : MonoBehaviour {
             float distanceClamped = Mathf.Min(distance, 1.0f);
             float force = 1.0f / distanceClamped - 1;
 
-            crate.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 5000f * force));
+            crate.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 1700000f * force));
         }
     }
 }

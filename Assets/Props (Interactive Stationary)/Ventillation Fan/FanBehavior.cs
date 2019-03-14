@@ -6,12 +6,19 @@ public class FanBehavior : MonoBehaviour {
 
     public float fanForce;
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        Rigidbody2D rb = collision.GetComponent<Rigidbody2D>();
-        if (rb != null)
+        if (collision.CompareTag("Player"))
         {
-            rb.AddForce(Vector2.up * fanForce);
+            collision.GetComponent<PlayerController>().windImpulse = Vector2.up * fanForce;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            collision.GetComponent<PlayerController>().windImpulse = Vector2.zero;
         }
     }
 }
