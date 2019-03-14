@@ -6,8 +6,44 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/00 Broom Closet Hallway/Broom Closet Hallway.unity
+    path: Assets/Scenes/01 Broom Closet.unity
     guid: 018a070cc2dade34c96cdc74f4efe41a
   - enabled: 1
-    path: Assets/Scenes/01 Reactor Core/Reactor Core.unity
+    path: Assets/Scenes/04 Reactor Core.unity
     guid: 78902bf0a8491144d8277165685f2ff0
+  - enabled: 1
+    path: Assets/Scenes/11 Uranium Enrichment.unity
+    guid: bedd44c9c1add454eb8a5b7304be937b
+  - enabled: 1
+    path: Assets/Scenes/00 Elevator Shaft.unity
+    guid: fd8ea2bd71158d947a71263f9ab0a443
+  - enabled: 1
+    path: Assets/Scenes/00 Outlines.unity
+    guid: fe0a074c5672d49409cb22678d52737d
+  - enabled: 1
+    path: Assets/Scenes/02 Command Center.unity
+    guid: 54eea64b2e143e7469866823684d1bf2
+  - enabled: 1
+    path: Assets/Scenes/03 Storage.unity
+    guid: e4950dcc3bbe04431a958d428a127987
+  - enabled: 1
+    path: Assets/Scenes/05 Computer Lab.unity
+    guid: f7010d47c328f374f8ee6afa4ffa1376
+  - enabled: 1
+    path: Assets/Scenes/06 Cafeteria.unity
+    guid: 2c465bd79323f174db38394ad17e8bb0
+  - enabled: 1
+    path: Assets/Scenes/07 Kitchen.unity
+    guid: 738c58a2a11914cc587bc69a8993605b
+  - enabled: 1
+    path: Assets/Scenes/09 Ventilation.unity
+    guid: 5f5a4c4a742554e42aa61e4af17cbe14
+  - enabled: 1
+    path: Assets/Scenes/10 Research Lab.unity
+    guid: b4d59af3dfee65747a1ecc2afb9540a0
+  - enabled: 1
+    path: Assets/Scenes/12 Warehouse.unity
+    guid: d26ce6b9e909ce648b7bb76a727731af
+  - enabled: 1
+    path: Assets/Scenes/13 Cableway.unity
+    guid: 9115c661105c906489c7fabda4cc54ad

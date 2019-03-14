@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 	public GameObject liquidPrefab;
@@ -75,7 +76,57 @@ public class PlayerController : MonoBehaviour {
 		stateMachine.SetBool("Touching_Climbable", touchingClimbables.Count > 0);
 		stateMachine.SetBool("Touching_Grabbable", touchingGrabbables.Count > 0);
 		stateMachine.SetBool("Touching_Draggable", GetEligibleDraggables().Count > 0);
-	}
+
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SceneManager.LoadScene("01 Broom Closet");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            SceneManager.LoadScene("02 Command Center");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SceneManager.LoadScene("03 Storage");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            SceneManager.LoadScene("04 Reactor Core");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            SceneManager.LoadScene("05 Computer Lab");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            SceneManager.LoadScene("06 Cafeteria");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            SceneManager.LoadScene("07 Kitchen");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha8))
+        {
+            SceneManager.LoadScene("09 Ventilation");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            SceneManager.LoadScene("10 Research Lab");
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            SceneManager.LoadScene("11 Uranium Enrichment");
+        }
+        if (Input.GetKeyDown(KeyCode.Minus))
+        {
+            SceneManager.LoadScene("12 Warehouse");
+        }
+        if (Input.GetKeyDown(KeyCode.Equals))
+        {
+            SceneManager.LoadScene("13 Cableway");
+        }
+    }
 
 	void FixedUpdate() {
 		stateMachine.Update(Time.fixedDeltaTime);
