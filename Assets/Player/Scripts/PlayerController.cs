@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour {
 	public float dragSpeed = 1.0f;
 	public float climbSpeed = 1.0f;
 	public float jumpVelocity = 7.5f;
+	public Vector2 windImpulse = Vector2.zero;
 
 	List<GameObject> touchingGrounds = new List<GameObject>();
 	List<GameObject> touchingDraggablesDisqualified = new List<GameObject>();
@@ -83,26 +84,36 @@ public class PlayerController : MonoBehaviour {
 		playerRigidbody.gravityScale = 1;
 
 		// Perform the functionality of the active player state
-		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Climbing") && !climbingTemporarilyProhibited) PerformClimbing();
-		else if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Walking")) PerformWalking();
-		else if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Falling")) PerformFalling();
-		else if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Grabbing")) PerformGrabbing();
-		else if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Dragging")) PerformDragging();
-		else if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Mopping")) PerformMopping();
-		else if (!climbingTemporarilyProhibited) { deltaV = new Vector2(-playerRigidbody.velocity.x, 0); Debug.Log("END OF CHAIN"); }
+		bool didNothing = true;
+
+		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Climbing") && !climbingTemporarilyProhibited) { PerformClimbing(); didNothing = false; }
+
+		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Walking")) { PerformWalking(); didNothing = false; }
+
+		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Falling")) { PerformFalling(); didNothing = false; }
+
+		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Grabbing")) { PerformGrabbing(); didNothing = false; }
+
+		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Dragging")) { PerformDragging(); didNothing = false; }
+
+		if (stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Mopping")) { PerformMopping(); didNothing = false; }
+		else { moppingTime = 0; }
+
+
+		if (didNothing) { deltaV = new Vector2(-playerRigidbody.velocity.x, 0); }
+
+		deltaV += windImpulse;
 
 		// Apply the change in player velocity as an impulse (force * deltaT = impulse = mass * deltaV)
 		playerRigidbody.AddForce(deltaV * playerRigidbody.mass, ForceMode2D.Impulse);
 	}
 
 	void PerformWalking() {
-		Debug.Log("Walking");
 		// Ensure there is no active interaction target
 		activeInteractionTarget = null;
 
 		// Jump
 		if (stateMachine.GetBool("Input_JumpPressWait")) {
-			Debug.Log("WALKING : JUMP");
 			JumpMotion();
 		}
 
@@ -120,7 +131,6 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void PerformFalling() {
-		Debug.Log("Falling");
 		// Horizontal air strafe movement
 		FallMotion();
 
@@ -131,6 +141,7 @@ public class PlayerController : MonoBehaviour {
 
 	void PerformMopping() {
 		if (moppingTime == 0) {
+			Debug.Log("Mopping");
 			animationController.SetActiveCycle(PlayerAnimationCycle.Mopping);
 			
 			bool playerTouchingMoppableSurface = touchingGrounds.Any(ground => ground.layer == 0);
@@ -158,13 +169,9 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void PerformClimbing() {
-		Debug.Log("Climbing");
-
 		// Jump off ladder
 		if (stateMachine.GetBool("Input_JumpPressWait")) {
-			Debug.Log("CLIMBING : JUMP");
 			climbingTemporarilyProhibited = true;
-			Debug.Log("CLIMBING : SET climbingTemporarilyProhibited TRUE");
 			JumpMotion();
 			return;
 		}
