@@ -1607,8 +1607,8 @@ SpringJoint2D:
   m_ConnectedAnchor: {x: 0.4, y: 0.2}
   m_AutoConfigureDistance: 0
   m_Distance: 0.2
-  m_DampingRatio: 0
-  m_Frequency: 1
+  m_DampingRatio: 0.5
+  m_Frequency: 10
 --- !u!1 &1221751682
 GameObject:
   m_ObjectHideFlags: 0
