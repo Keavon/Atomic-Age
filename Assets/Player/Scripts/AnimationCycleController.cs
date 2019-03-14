@@ -96,7 +96,7 @@ public class AnimationCycleController : MonoBehaviour {
 		if (animator.parameterCount == 1) {
 			if (speed < 0) animator.SetBool("mirror", true);
 			if (speed > 0) animator.SetBool("mirror", false);
-			animator.speed = Mathf.Abs(speed);
 		}
+		animator.speed = Mathf.Abs(speed);
 	}
 }
