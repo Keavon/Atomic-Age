@@ -259,11 +259,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 246246067}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -21.74, y: -4.39, z: -1.53}
+  m_LocalPosition: {x: -6.12, y: 4.4900002, z: -1.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_Father: {fileID: 774301537}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &272723499
 GameObject:
@@ -296,6 +296,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1219421887}
+  boundsPlane: {fileID: 0}
+  zoom: 0
+  smoothing: 0
+  shakeAmount: 0
+  shakeDuration: 0
+  smooth: 0
+  smoothAmount: 5
 --- !u!81 &272723501
 AudioListener:
   m_ObjectHideFlags: 0
@@ -586,7 +593,10 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 246246069}
+  - {fileID: 2006675504}
+  - {fileID: 1028119569}
   m_Father: {fileID: 1598566182}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -678,7 +688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 652459615744ec84b88675b2d4d8c2c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enabled: 1
+  ladderEnabled: 1
 --- !u!61 &950186387
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -854,11 +864,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1028119567}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -15.89, y: -3.79, z: -4.63}
+  m_LocalPosition: {x: -0.27000046, y: 5.09, z: -4.63}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_Father: {fileID: 774301537}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1084988958 stripped
 Transform:
@@ -1240,11 +1250,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2006675502}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10.16, y: -2.35, z: -1.53}
+  m_LocalPosition: {x: 5.46, y: 6.53, z: -1.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_Father: {fileID: 774301537}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2019150233
 GameObject:
@@ -1277,7 +1287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 652459615744ec84b88675b2d4d8c2c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enabled: 1
+  ladderEnabled: 1
 --- !u!61 &2019150235
 BoxCollider2D:
   m_ObjectHideFlags: 0

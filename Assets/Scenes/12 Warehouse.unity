@@ -1448,7 +1448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 652459615744ec84b88675b2d4d8c2c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enabled: 1
+  ladderEnabled: 1
 --- !u!61 &950186387
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1863,7 +1863,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1949319394583264, guid: 86311976a50ffd84e96dadb76f355083, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1949319394583264, guid: 86311976a50ffd84e96dadb76f355083, type: 2}
       propertyPath: m_Name
