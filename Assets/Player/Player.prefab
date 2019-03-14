@@ -40,7 +40,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1949319394583264}
   m_LocalRotation: {x: -0, y: 0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.85, y: -3.461, z: 0}
+  m_LocalPosition: {x: -53.264, y: -13.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -207,10 +207,10 @@ MonoBehaviour:
   climbing:
     alignment: {x: -0.402, y: 0.782}
     noMop: {fileID: 9100000, guid: 508533869f404904db88eadb34249f2c, type: 2}
-    cleanMop: {fileID: 0}
-    oilMop: {fileID: 0}
-    glueMop: {fileID: 0}
-    ferrofluidMop: {fileID: 0}
+    cleanMop: {fileID: 9100000, guid: 295f9c14caa99a943877a5cb873d1efa, type: 2}
+    oilMop: {fileID: 9100000, guid: b683de3ff4c846f4ca60f759432505ee, type: 2}
+    glueMop: {fileID: 9100000, guid: fe000974eb8658e4f8385e4e323d1fb9, type: 2}
+    ferrofluidMop: {fileID: 9100000, guid: 67d21a3d08471ba4f9b213497f50092c, type: 2}
   grabbingButton:
     alignment: {x: 0, y: 0}
     noMop: {fileID: 0}
@@ -244,3 +244,4 @@ MonoBehaviour:
   dragSpeed: 1
   climbSpeed: 1.5
   jumpVelocity: 7
+  windImpulse: {x: 0, y: 0}
