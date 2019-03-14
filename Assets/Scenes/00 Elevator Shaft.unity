@@ -152,6 +152,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1407274833785576, guid: 3f206d0909db5b04496d6ff9e8d89aa8, type: 2}
+      propertyPath: m_Name
+      value: 00 Elevator Shaft
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3f206d0909db5b04496d6ff9e8d89aa8, type: 2}
   m_IsPrefabParent: 0

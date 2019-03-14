@@ -1897,7 +1897,7 @@ GameObject:
   m_Component:
   - component: {fileID: 689598795}
   m_Layer: 0
-  m_Name: Room
+  m_Name: 04 Reactor Core
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
