@@ -49,8 +49,17 @@ public class LiquidBehavior : MonoBehaviour
     private bool beingDestroyed = false;
     private bool beingCreated = true;
 
-    private float left, right;
+    private float left = 0;
+    private float right = 0;
 
+
+
+    public void PlaceLiquid(Vector3 position, Fluid fluid, float leftVal, float rightVal, bool doAnimation)
+    {
+        left = leftVal;
+        right = rightVal;
+        PlaceLiquid(position, fluid, doAnimation);
+    }
 
 
     public void PlaceLiquid(Vector3 position, Fluid fluid, bool doAnimation)
@@ -120,7 +129,10 @@ public class LiquidBehavior : MonoBehaviour
             gameObject.tag = "Oil";
             gameObject.GetComponent<Renderer>().material.color = oilColor;
             liquidDrips = liquidDripsOil;
-            left = right = 2f;
+            if (left == 0 && right == 0)
+            {
+                left = right = 2f;
+            }
         }
         else if (fluid == Fluid.Glue)
         {
@@ -129,7 +141,10 @@ public class LiquidBehavior : MonoBehaviour
             gameObject.tag = "Glue";
             gameObject.GetComponent<Renderer>().material.color = glueColor;
             liquidDrips = liquidDripsGlue;
-            left = right = 1f;
+            if (left == 0 && right == 0)
+            {
+                left = right = 1f;
+            }
         }
         else if (fluid == Fluid.Ferro)
         {
@@ -137,7 +152,10 @@ public class LiquidBehavior : MonoBehaviour
             gameObject.tag = "Ferrofluid";
             gameObject.GetComponent<Renderer>().material.color = ferroColor;
             liquidDrips = liquidDripsFerro;
-            left = right = 0.7f;
+            if (left == 0 && right == 0)
+            {
+                left = right = 0.7f;
+            }
         }
     }
 
