@@ -82,6 +82,8 @@ public class PlayerController : MonoBehaviour {
 		// Reset the change in player velocity sum
 		deltaV = Vector2.zero;
 
+		if (springJoint.connectedBody && !stateMachine.GetCurrentAnimatorStateInfo(0).IsName("Dragging")) DeactivateDragging();
+
 		// Reenable gravity in case it was disabled for climbing
 		playerRigidbody.gravityScale = 1;
 
@@ -228,10 +230,15 @@ public class PlayerController : MonoBehaviour {
 		// Update animation
 
 		PerformWalking();
-		
+
 		if (playerRigidbody.position.x > targetRigidbody.position.x) animationController.SetFacingLeft();
 		else animationController.SetFacingRight();
 		animationController.SetActiveCycle(PlayerAnimationCycle.Dragging);
+	}
+
+	void DeactivateDragging() {
+		springJoint.enabled = false;
+		springJoint.connectedBody = null;
 	}
 
 	void WalkMotion(float speed = -1) {
