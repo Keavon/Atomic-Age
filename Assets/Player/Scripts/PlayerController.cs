@@ -32,10 +32,12 @@ public class PlayerController : MonoBehaviour {
 	Vector2 inputMotion;
 	float moppingTime = 0f;
 	bool climbingTemporarilyProhibited = false;
+	SpringJoint2D springJoint;
 
 	void Start() {
 		playerRigidbody = GetComponent<Rigidbody2D>();
 		stateMachine = GetComponent<Animator>();
+		springJoint = GetComponent<SpringJoint2D>();
 
 		playerVisuals = new GameObject("Player [VISUALS]");
 		playerVisuals.SetActive(false);
@@ -209,17 +211,33 @@ public class PlayerController : MonoBehaviour {
 	void PerformDragging() {
 		// Ensure there is a drag target
 		SelectInteractionTarget();
+		if (!activeInteractionTarget) return;
+		Debug.Log(activeInteractionTarget);
 
-		// Redirect motion into drag target
-		Vector2 draggingSpeed = new Vector2(playerRigidbody.velocity.x * dragSpeed, 0);
-		SendMotionToInteractionTarget(draggingSpeed);
+		Rigidbody2D targetRigidbody = activeInteractionTarget.GetComponent<Rigidbody2D>();
+		springJoint.enabled = true;
+		springJoint.connectedBody = targetRigidbody;
+
+
+		// // Walk slowly with box
+		// WalkMotion(dragSpeed);
+
+		// Send that slow motion into drag target
+		// SendMotionToInteractionTarget(deltaV);
 
 		// Update animation
+
+		PerformWalking();
+		
+		if (playerRigidbody.position.x > targetRigidbody.position.x) animationController.SetFacingLeft();
+		else animationController.SetFacingRight();
 		animationController.SetActiveCycle(PlayerAnimationCycle.Dragging);
 	}
 
-	void WalkMotion() {
-		Vector2 targetVelocity = inputMotion * walkSpeed;
+	void WalkMotion(float speed = -1) {
+		if (speed == -1) speed = walkSpeed;
+		
+		Vector2 targetVelocity = inputMotion * speed;
 		Vector2 relativeTargetVelocity = targetVelocity;
 		if (rigidbodySupportingPlayer) {
 			relativeTargetVelocity += rigidbodySupportingPlayer.velocity;

@@ -198,7 +198,7 @@ MonoBehaviour:
     glueMop: {fileID: 0}
     ferrofluidMop: {fileID: 0}
   dragging:
-    alignment: {x: 0, y: 0}
+    alignment: {x: 0, y: 0.8}
     noMop: {fileID: 9100000, guid: 4403b7339639462418cfa2ecb57e634c, type: 2}
     cleanMop: {fileID: 9100000, guid: b5f79bb2e9054bc418495d1af09f32d0, type: 2}
     oilMop: {fileID: 9100000, guid: fd50a3c6c8bd64b42a9b313da8de2752, type: 2}

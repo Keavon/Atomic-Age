@@ -154,7 +154,17 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1407274833785576, guid: 3f206d0909db5b04496d6ff9e8d89aa8, type: 2}
       propertyPath: m_Name
-      value: 00 Elevator Shaft
+      value: Elevator Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 114075408896926728, guid: 3f206d0909db5b04496d6ff9e8d89aa8,
+        type: 2}
+      propertyPath: waypoints.Array.data[0].y
+      value: -3.45884
+      objectReference: {fileID: 0}
+    - target: {fileID: 114075408896926728, guid: 3f206d0909db5b04496d6ff9e8d89aa8,
+        type: 2}
+      propertyPath: autoplay
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3f206d0909db5b04496d6ff9e8d89aa8, type: 2}
@@ -287,6 +297,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1519961108 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1930331910214092, guid: 3f206d0909db5b04496d6ff9e8d89aa8,
+    type: 2}
+  m_PrefabInternal: {fileID: 314827867}
+--- !u!114 &1519961110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1519961108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee47bf26b3da9aa49be792d8dfe6787f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionObject: {fileID: 1614803940}
+  actionableScript: WaypointMoveController
+--- !u!1 &1614803940 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1407274833785576, guid: 3f206d0909db5b04496d6ff9e8d89aa8,
+    type: 2}
+  m_PrefabInternal: {fileID: 314827867}
 --- !u!1001 &1715607362
 Prefab:
   m_ObjectHideFlags: 0

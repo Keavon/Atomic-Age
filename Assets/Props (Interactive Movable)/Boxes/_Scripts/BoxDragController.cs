@@ -3,8 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BoxDragController : MonoBehaviour, IDraggable {
+	Rigidbody2D rb;
+
+	public void Awake() {
+		rb = GetComponent<Rigidbody2D>();
+	}
+
 	public void Move(float dragSpeed) {
-		GetComponent<Rigidbody2D>().velocity = new Vector2(dragSpeed, 0);
+		rb.AddForce(new Vector2(dragSpeed, 0), ForceMode2D.Impulse);
 	}
 
 	public void OnTriggerEnter2D(Collider2D other) {
