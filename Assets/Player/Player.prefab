@@ -172,24 +172,24 @@ MonoBehaviour:
   standing:
     alignment: {x: -0.024, y: 0.8}
     noMop: {fileID: 9100000, guid: 7e84738f7b9171a4a966c3de901f8f66, type: 2}
-    cleanMop: {fileID: 9100000, guid: 8177d840095ee6c49afe1ccc4eabde2f, type: 2}
-    oilMop: {fileID: 0}
-    glueMop: {fileID: 0}
-    ferrofluidMop: {fileID: 0}
+    cleanMop: {fileID: 9100000, guid: 9c601a284358da34f8b5812a6b53385c, type: 2}
+    oilMop: {fileID: 9100000, guid: 4582d26d557ee284cb5c66f187255bd3, type: 2}
+    glueMop: {fileID: 9100000, guid: 97420f09f1faded4dbc4eacb8630baee, type: 2}
+    ferrofluidMop: {fileID: 9100000, guid: ec0a50b234fe18448b6c764ae4f2f9c3, type: 2}
   walking:
     alignment: {x: -0.012, y: 0.804}
     noMop: {fileID: 9100000, guid: 3166b465533e9104e859dbaaf6303b82, type: 2}
-    cleanMop: {fileID: 0}
-    oilMop: {fileID: 0}
-    glueMop: {fileID: 0}
-    ferrofluidMop: {fileID: 0}
+    cleanMop: {fileID: 9100000, guid: c9a7c356401fd7849be27519294585ee, type: 2}
+    oilMop: {fileID: 9100000, guid: 9d2e62c5eb2254d4ea00017d8398929f, type: 2}
+    glueMop: {fileID: 9100000, guid: a1a301a758eed714bb8a8ef2c37854bd, type: 2}
+    ferrofluidMop: {fileID: 9100000, guid: d9722026bb245904ba9425b820b706b7, type: 2}
   falling:
     alignment: {x: -0.014, y: 0.748}
     noMop: {fileID: 9100000, guid: 1fbc87a10bf6f9846af1f75bdf567108, type: 2}
-    cleanMop: {fileID: 0}
-    oilMop: {fileID: 0}
-    glueMop: {fileID: 0}
-    ferrofluidMop: {fileID: 0}
+    cleanMop: {fileID: 9100000, guid: 9aedf4093e155194f8b614851dc3a830, type: 2}
+    oilMop: {fileID: 9100000, guid: 02c94c3d80decbb42b55b6adcde636a9, type: 2}
+    glueMop: {fileID: 9100000, guid: 4d104160eda77774880261f24ba43513, type: 2}
+    ferrofluidMop: {fileID: 9100000, guid: b8b30a5d637b53e44bd4a3588caf6e94, type: 2}
   mopping:
     alignment: {x: 0, y: 0}
     noMop: {fileID: 0}
@@ -199,11 +199,11 @@ MonoBehaviour:
     ferrofluidMop: {fileID: 0}
   dragging:
     alignment: {x: 0, y: 0}
-    noMop: {fileID: 0}
-    cleanMop: {fileID: 0}
-    oilMop: {fileID: 0}
-    glueMop: {fileID: 0}
-    ferrofluidMop: {fileID: 0}
+    noMop: {fileID: 9100000, guid: 4403b7339639462418cfa2ecb57e634c, type: 2}
+    cleanMop: {fileID: 9100000, guid: b5f79bb2e9054bc418495d1af09f32d0, type: 2}
+    oilMop: {fileID: 9100000, guid: fd50a3c6c8bd64b42a9b313da8de2752, type: 2}
+    glueMop: {fileID: 9100000, guid: e8533821c4561684fa04d17b68e490cf, type: 2}
+    ferrofluidMop: {fileID: 9100000, guid: b526f4f216ca72249a04882c2d717305, type: 2}
   climbing:
     alignment: {x: -0.402, y: 0.782}
     noMop: {fileID: 9100000, guid: 508533869f404904db88eadb34249f2c, type: 2}

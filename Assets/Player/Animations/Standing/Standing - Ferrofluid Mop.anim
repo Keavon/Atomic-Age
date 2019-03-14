@@ -5,7 +5,7 @@ AnimationClip:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Standing - Clean Mop
+  m_Name: Standing - Ferrofluid Mop
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -19,7 +19,7 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 21300000, guid: 85bbe3cdfa9acb640a3ca691da575b17, type: 3}
+      value: {fileID: 21300000, guid: 58a8802120fad4f4a98db7aa49f6b5fc, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -39,7 +39,7 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 85bbe3cdfa9acb640a3ca691da575b17, type: 3}
+    - {fileID: 21300000, guid: 58a8802120fad4f4a98db7aa49f6b5fc, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
