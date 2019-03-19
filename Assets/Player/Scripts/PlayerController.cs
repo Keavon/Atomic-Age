@@ -282,8 +282,16 @@ public class PlayerController : MonoBehaviour {
 
 		PerformWalking();
 
-		if (playerRigidbody.position.x > targetRigidbody.position.x) animationController.SetFacingLeft();
-		else animationController.SetFacingRight();
+		if (playerRigidbody.position.x > targetRigidbody.position.x) {
+			animationController.SetFacingLeft();
+			springJoint.anchor = new Vector2(-Mathf.Abs(springJoint.anchor.x), springJoint.anchor.y);
+			springJoint.connectedAnchor = new Vector2(Mathf.Abs(springJoint.connectedAnchor.x), springJoint.connectedAnchor.y);
+		}
+		else {
+			animationController.SetFacingRight();
+			springJoint.anchor = new Vector2(Mathf.Abs(springJoint.anchor.x), springJoint.anchor.y);
+			springJoint.connectedAnchor = new Vector2(-Mathf.Abs(springJoint.connectedAnchor.x), springJoint.connectedAnchor.y);
+		}
 		animationController.SetActiveCycle(PlayerAnimationCycle.Dragging);
 	}
 

@@ -11,7 +11,6 @@ public class CraneHeightController : MonoBehaviour, IActionable {
 	GameObject pulley;
 	GameObject cables;
 	float initialHeight;
-	float initialHeightCables;
 	float initialHeightPulley;
 	bool moving = false;
 
@@ -22,7 +21,6 @@ public class CraneHeightController : MonoBehaviour, IActionable {
 		cables = transform.Find("Cables").gameObject;
 
 		initialHeight = craneRigidbody.transform.position.y;
-		initialHeightCables = cables.transform.localPosition.y;
 		initialHeightPulley = pulley.transform.localPosition.y;
 	}
 
