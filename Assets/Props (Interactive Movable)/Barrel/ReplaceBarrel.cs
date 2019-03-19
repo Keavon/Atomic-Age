@@ -13,6 +13,7 @@ public class ReplaceBarrel : MonoBehaviour {
         if (collider.CompareTag("PropReplace"))
         {
             transform.localPosition = new Vector3(spawnX, spawnY, 0);
+            GetComponent<Rigidbody2D>().velocity = Vector3.down * 10;
         }
     }
 }
