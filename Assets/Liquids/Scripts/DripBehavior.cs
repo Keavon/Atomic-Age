@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Written by Trace Rainbolt
 public class DripBehavior : MonoBehaviour {
 
     // Movement speed in units/sec.

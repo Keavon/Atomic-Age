@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Written by Trace Rainbolt
 public class FerroFluidBehavior : MonoBehaviour {
 
     public float maxDistance = 1.0f;

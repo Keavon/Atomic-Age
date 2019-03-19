@@ -436,14 +436,16 @@ public class PlayerController : MonoBehaviour {
 		climbingTemporarilyProhibited = false;
 	}
 
-	private void PlaceLiquid(Vector3 position, Fluid fluid) {
+    // Written by Trace Rainbolt
+    private void PlaceLiquid(Vector3 position, Fluid fluid) {
 		GameObject liquid = Instantiate(liquidPrefab, new Vector3(0, 0, -1), Quaternion.identity);
 		liquid.GetComponent<LiquidBehavior>().PlaceLiquid(position, fluid, true);
 		currentMoppingTarget = liquid;
 		liquidsPlaced.Add(liquid);
 	}
 
-	private void CheckPickupLiquid(Vector3 position) {
+    // Written by Trace Rainbolt
+    private void CheckPickupLiquid(Vector3 position) {
 		Vector2 hitSize = new Vector2(1, 0.5f);
 		float distance = 1;
 		LayerMask moppableLayer = LayerMask.GetMask("Liquids");

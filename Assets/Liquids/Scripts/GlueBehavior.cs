@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Written by Trace Rainbolt
 public class GlueBehavior : MonoBehaviour {
-
     private void OnTriggerStay2D(Collider2D collider2d)
     {
         if (collider2d.gameObject.CompareTag("Crate"))

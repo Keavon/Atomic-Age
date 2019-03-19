@@ -1,4 +1,6 @@
-﻿public enum Fluid
+﻿// Written by Trace Rainbolt
+
+public enum Fluid
 {
     None,
     Oil,

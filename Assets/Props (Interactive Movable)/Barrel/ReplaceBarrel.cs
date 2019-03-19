@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Written by Trace Rainbolt
 public class ReplaceBarrel : MonoBehaviour {
 
     public float spawnX;
