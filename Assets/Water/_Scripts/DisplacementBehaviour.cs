@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+//Author: Vanessa Lopez
 //step 1: raise pool water level to top of caution tape
 //step 2: raise secondary water on right to top of caution tape
 //step 3: delete secondary, widen pool water
 //step 4: raise pool water to halfway up left slope
 // tune the timing right
-// edit script and shader to remove lines that aren't used 
-// rename variables, customize to code style
 public class DisplacementBehaviour : MonoBehaviour {
 	public Material ppeMaterial;
 	public Texture displacementTexture;

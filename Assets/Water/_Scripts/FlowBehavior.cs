@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Author: Vanessa Lopez
 public class FlowBehavior : MonoBehaviour {
 
     public GameObject mainWater;
